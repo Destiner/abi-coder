@@ -40,7 +40,7 @@ class Coder {
 		this.abi = abi;
 	}
 
-	toResult(params: Param[]): Result {
+	static toResult(params: Param[]): Result {
 		return params.map((param) => param.value);
 	}
 
