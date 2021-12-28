@@ -162,8 +162,6 @@ class Coder {
 		const dataParams = this.toEventParams(event.name, dataResult);
 		const allParams = [...topicParams, ...dataParams];
 		const params: EventParam[] = [];
-		// let topicParamIndex = 0;
-		// let dataParamIndex = 0;
 		for (const input of inputs) {
 			const param = allParams.find((param) => param.name === input.name);
 			if (!param) {
@@ -206,7 +204,8 @@ class Coder {
 			return;
 		}
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
-		const data = defaultAbiCoder.encode(inputs, params);
+		const result = Coder.toResult(params);
+		const data = defaultAbiCoder.encode(inputs, result);
 		return `0x${data}`;
 	}
 
@@ -234,13 +233,15 @@ class Coder {
 		}
 		// Encode topic params
 		const topicInputs = inputs.filter((input) => input.indexed);
-		const dataTopics = topicInputs.map((input, index) =>
-			defaultAbiCoder.encode([input], [topicParams[index]]),
-		);
+		const dataTopics = topicInputs.map((input, index) => {
+			const topicResult = Coder.toResult([topicParams[index]]);
+			return defaultAbiCoder.encode([input], topicResult);
+		});
 		const topics = [eventTopic, ...dataTopics];
 		// Encode data params
 		const dataInputs = inputs.filter((input) => !input.indexed);
-		const data = defaultAbiCoder.encode(dataInputs, dataParams);
+		const dataResult = Coder.toResult(dataParams);
+		const data = defaultAbiCoder.encode(dataInputs, dataResult);
 
 		return {
 			topics,
@@ -258,7 +259,8 @@ class Coder {
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
 		const signature = Coder.getSignature(name, inputs);
 		const selector = sha3.keccak256(signature).substring(0, 8);
-		const argumentString = defaultAbiCoder.encode(inputs, params);
+		const result = Coder.toResult(params);
+		const argumentString = defaultAbiCoder.encode(inputs, result);
 		const argumentData = argumentString.substring(2);
 		const inputData = `0x${selector}${argumentData}`;
 		return inputData;
