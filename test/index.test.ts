@@ -324,19 +324,16 @@ describe('Coder', () => {
 					{
 						name: 'from',
 						type: 'address',
-						components: undefined,
 						indexed: true,
 					},
 					{
 						name: 'to',
 						type: 'address',
-						components: undefined,
 						indexed: true,
 					},
 					{
 						name: 'amount',
 						type: 'uint256',
-						components: undefined,
 						indexed: false,
 					},
 				],
@@ -468,12 +465,10 @@ describe('Coder', () => {
 					{
 						name: 'from',
 						type: 'address',
-						components: undefined,
 					},
 					{
 						name: 'amount',
 						type: 'uint256',
-						components: undefined,
 					},
 				],
 				values: [
@@ -715,12 +710,10 @@ describe('Coder', () => {
 					{
 						name: 'name',
 						type: 'bytes32',
-						components: undefined,
 					},
 					{
 						name: 'symbol',
 						type: 'bytes8',
-						components: undefined,
 					},
 				],
 				values: [
