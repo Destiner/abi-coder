@@ -54,5 +54,34 @@
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"components": [
+					{
+						"name": "seller",
+						"type": "address"
+					},
+					{
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"name": "price",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct Good[][]",
+				"name": "goods",
+				"type": "tuple[][]"
+			}
+		],
+		"name": "updateMarkets",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
 	}
 ]
