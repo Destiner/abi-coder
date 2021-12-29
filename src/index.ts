@@ -14,6 +14,12 @@ interface FunctionData {
 	values: Result;
 }
 
+interface FunctionOutputData {
+	name: string;
+	outputs: JsonFragmentType[];
+	values: Result;
+}
+
 interface Constructor {
 	inputs: JsonFragmentType[];
 	values: Result;
@@ -138,6 +144,24 @@ class Coder {
 		};
 	}
 
+	decodeFunctionOutput(
+		name: string,
+		data: string,
+	): FunctionOutputData | undefined {
+		const func = this.getFunctionByName(name);
+		const jsonOutputs = func?.outputs;
+		if (!jsonOutputs) {
+			return;
+		}
+		const outputs = jsonOutputs.map((output) => ParamType.fromObject(output));
+		const result = defaultAbiCoder.decode(outputs, data);
+		return {
+			name,
+			outputs,
+			values: result,
+		};
+	}
+
 	encodeConstructor(constructorData: Constructor): string | undefined {
 		const constructor = this.getConstructor();
 		const jsonInputs = constructor?.inputs;
@@ -202,6 +226,17 @@ class Coder {
 		const argumentData = argumentString.substring(2);
 		const inputData = `0x${selector}${argumentData}`;
 		return inputData;
+	}
+
+	encodeFunctionOutput(functionData: FunctionOutputData): string | undefined {
+		const func = this.getFunctionByName(functionData.name);
+		const jsonOutputs = func?.outputs;
+		if (!jsonOutputs) {
+			return;
+		}
+		const outputs = jsonOutputs.map((output) => ParamType.fromObject(output));
+		const result = functionData.values;
+		return defaultAbiCoder.encode(outputs, result);
 	}
 
 	private getConstructor(): JsonFragment | undefined {
