@@ -43,11 +43,11 @@ class Coder {
 		this.abi = abi;
 	}
 
-	getFunctionSelector(name: string): string | undefined {
+	getFunctionSelector(name: string): string {
 		const func = this.getFunctionByName(name);
 		const jsonInputs = func?.inputs;
 		if (!jsonInputs) {
-			return;
+			throw Error;
 		}
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
 		const signature = Coder.getSignature(name, inputs);
@@ -55,22 +55,22 @@ class Coder {
 		return hash.substring(0, 10);
 	}
 
-	getEventTopic(name: string): string | undefined {
+	getEventTopic(name: string): string {
 		const event = this.getEventByName(name);
 		const jsonInputs = event?.inputs;
 		if (!jsonInputs) {
-			return;
+			throw Error;
 		}
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
 		const signature = Coder.getSignature(name, inputs);
 		return sha3(signature);
 	}
 
-	decodeConstructor(data: string): Constructor | undefined {
+	decodeConstructor(data: string): Constructor {
 		const constructor = this.getConstructor();
 		const jsonInputs = constructor?.inputs;
 		if (!jsonInputs) {
-			return;
+			throw Error;
 		}
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
 		const result = defaultAbiCoder.decode(inputs, data);
@@ -80,12 +80,12 @@ class Coder {
 		};
 	}
 
-	decodeEvent(topics: string[], data: string): Event | undefined {
+	decodeEvent(topics: string[], data: string): Event {
 		const event = this.getEventByTopic(topics[0]);
 		const [, ...dataTopics] = topics;
 		const jsonInputs = event?.inputs;
 		if (!jsonInputs) {
-			return;
+			throw Error;
 		}
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
 		// Decode topics
@@ -101,7 +101,7 @@ class Coder {
 		const dataResult = defaultAbiCoder.decode(dataInputs, data);
 		// Concat
 		if (!event.name) {
-			return;
+			throw Error;
 		}
 		let topicIndex = 0;
 		let dataIndex = 0;
@@ -122,20 +122,20 @@ class Coder {
 		};
 	}
 
-	decodeFunction(data: string): FunctionData | undefined {
+	decodeFunction(data: string): FunctionData {
 		const selector = data.substring(0, 10);
 		const func = this.getFunctionBySelector(selector);
 		// Decode calldata using function inputs
 		const jsonInputs = func?.inputs;
 		if (!jsonInputs) {
-			return;
+			throw Error;
 		}
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
 		const calldata = `0x${data.substring(10)}`;
 		const result = defaultAbiCoder.decode(inputs, calldata);
 
 		if (!func.name) {
-			return;
+			throw Error;
 		}
 		return {
 			name: func.name,
@@ -144,14 +144,11 @@ class Coder {
 		};
 	}
 
-	decodeFunctionOutput(
-		name: string,
-		data: string,
-	): FunctionOutputData | undefined {
+	decodeFunctionOutput(name: string, data: string): FunctionOutputData {
 		const func = this.getFunctionByName(name);
 		const jsonOutputs = func?.outputs;
 		if (!jsonOutputs) {
-			return;
+			throw Error;
 		}
 		const outputs = jsonOutputs.map((output) => ParamType.fromObject(output));
 		const result = defaultAbiCoder.decode(outputs, data);
@@ -162,11 +159,11 @@ class Coder {
 		};
 	}
 
-	encodeConstructor(constructorData: Constructor): string | undefined {
+	encodeConstructor(constructorData: Constructor): string {
 		const constructor = this.getConstructor();
 		const jsonInputs = constructor?.inputs;
 		if (!jsonInputs) {
-			return;
+			throw Error;
 		}
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
 		const result = constructorData.values;
@@ -174,12 +171,12 @@ class Coder {
 		return `0x${data}`;
 	}
 
-	encodeEvent(eventData: Event): EventEncoding | undefined {
+	encodeEvent(eventData: Event): EventEncoding {
 		const { name, values } = eventData;
 		const event = this.getEventByName(name);
 		const jsonInputs = event?.inputs;
 		if (!jsonInputs) {
-			return;
+			throw Error;
 		}
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
 		const eventSignature = Coder.getSignature(name, inputs);
@@ -212,12 +209,12 @@ class Coder {
 		};
 	}
 
-	encodeFunction(functionData: FunctionData): string | undefined {
+	encodeFunction(functionData: FunctionData): string {
 		const { name, values } = functionData;
 		const func = this.getFunctionByName(name);
 		const jsonInputs = func?.inputs;
 		if (!jsonInputs) {
-			return;
+			throw Error;
 		}
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
 		const signature = Coder.getSignature(name, inputs);
@@ -228,28 +225,36 @@ class Coder {
 		return inputData;
 	}
 
-	encodeFunctionOutput(functionData: FunctionOutputData): string | undefined {
+	encodeFunctionOutput(functionData: FunctionOutputData): string {
 		const func = this.getFunctionByName(functionData.name);
-		const jsonOutputs = func?.outputs;
+		const jsonOutputs = func.outputs;
 		if (!jsonOutputs) {
-			return;
+			throw Error;
 		}
 		const outputs = jsonOutputs.map((output) => ParamType.fromObject(output));
 		const result = functionData.values;
 		return defaultAbiCoder.encode(outputs, result);
 	}
 
-	private getConstructor(): JsonFragment | undefined {
-		return this.abi.find((item) => item.type === 'constructor');
+	private getConstructor(): JsonFragment {
+		const constructor = this.abi.find((item) => item.type === 'constructor');
+		if (!constructor) {
+			throw Error;
+		}
+		return constructor;
 	}
 
-	private getFunctionByName(name: string): JsonFragment | undefined {
-		return this.abi.find(
+	private getFunctionByName(name: string): JsonFragment {
+		const func = this.abi.find(
 			(item) => item.type === 'function' && item.name === name,
 		);
+		if (!func) {
+			throw Error;
+		}
+		return func;
 	}
 
-	private getFunctionBySelector(selector: string): JsonFragment | undefined {
+	private getFunctionBySelector(selector: string): JsonFragment {
 		const functions = this.abi.filter((item) => item.type === 'function');
 		const func = functions.find((func) => {
 			const name = func.name;
@@ -263,14 +268,23 @@ class Coder {
 			const funcSelector = hash.substring(0, 10);
 			return funcSelector === selector;
 		});
+		if (!func) {
+			throw Error;
+		}
 		return func;
 	}
 
-	private getEventByName(name: string): JsonFragment | undefined {
-		return this.abi.find((item) => item.type === 'event' && item.name === name);
+	private getEventByName(name: string): JsonFragment {
+		const event = this.abi.find(
+			(item) => item.type === 'event' && item.name === name,
+		);
+		if (!event) {
+			throw Error;
+		}
+		return event;
 	}
 
-	private getEventByTopic(topic: string): JsonFragment | undefined {
+	private getEventByTopic(topic: string): JsonFragment {
 		const events = this.abi.filter((item) => item.type === 'event');
 		const event = events.find((event) => {
 			const name = event.name;
@@ -283,6 +297,9 @@ class Coder {
 			const eventTopic = sha3(signature);
 			return eventTopic === topic;
 		});
+		if (!event) {
+			throw Error;
+		}
 		return event;
 	}
 
