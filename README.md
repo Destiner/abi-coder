@@ -71,5 +71,17 @@ erc20Coder.encodeFunction({
 
 ## API
 
-```ts
-```
+* Coder(abi)
+	* utils
+		* getFunctionSelector(name: string): string
+		* getEventTopic(name: string): string
+	* decoding
+		* decodeConstructor(data: string): Constructor
+		* decodeEvent(topics: string[], data: string): Event
+		* decodeFunction(data: string): FunctionData
+		* decodeFunctionOutput(name: string, data: string): FunctionOutputData
+	* encoding
+		* encodeConstructor(constructorData: Constructor): string
+		* encodeEvent(eventData: Event): EventEncoding
+		* encodeFunction(functionData: FunctionData): string
+		* encodeFunctionOutput(functionData: FunctionOutputData): string
