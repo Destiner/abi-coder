@@ -83,5 +83,45 @@
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"components": [
+					{
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"components": [
+							{
+								"name": "team",
+								"type": "address"
+							},
+							{
+								"name": "name",
+								"type": "string"
+							},
+							{
+								"name": "id",
+								"type": "uint16"
+							}
+						],
+						"internalType": "struct Team",
+						"name": "team",
+						"type": "tuple"
+					}
+				],
+				"internalType": "struct Seller",
+				"name": "seller",
+				"type": "tuple"
+			}
+		],
+		"name": "addSeller",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
 	}
 ]
