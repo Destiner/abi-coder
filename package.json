@@ -23,8 +23,7 @@
 	"dependencies": {
 		"@ethersproject/abi": "^5.5.0",
 		"@ethersproject/keccak256": "^5.5.0",
-		"@ethersproject/strings": "^5.5.0",
-		"js-sha3": "^0.8.0"
+		"@ethersproject/strings": "^5.5.0"
 	},
 	"devDependencies": {
 		"@ethersproject/bignumber": "^5.5.0",
