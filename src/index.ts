@@ -7,25 +7,21 @@ import {
 } from '@ethersproject/abi';
 import * as sha3 from 'js-sha3';
 
-interface Param {
-	name?: string;
-	type?: string;
-	components?: JsonFragmentType[];
-	value: unknown;
-}
-
-interface EventParam extends Param {
-	indexed?: boolean;
-}
-
 interface FunctionData {
 	name: string;
-	params: Param[];
+	inputs: JsonFragmentType[];
+	values: Result;
+}
+
+interface Constructor {
+	inputs: JsonFragmentType[];
+	values: Result;
 }
 
 interface Event {
 	name: string;
-	params: EventParam[];
+	inputs: JsonFragmentType[];
+	values: Result;
 }
 
 interface EventEncoding {
@@ -38,65 +34,6 @@ class Coder {
 
 	constructor(abi: JsonFragment[]) {
 		this.abi = abi;
-	}
-
-	static toResult(params: Param[]): Result {
-		return params.map((param) => param.value);
-	}
-
-	toEventParams(name: string, result: Result): EventParam[] {
-		const event = this.getEventByName(name);
-		const inputs = event?.inputs;
-		if (!inputs) {
-			return [];
-		}
-		return inputs
-			.map((input, index) => {
-				return {
-					name: input.name,
-					type: input.type,
-					components: input.components,
-					value: result[index],
-					indexed: input.indexed,
-				} as Param;
-			})
-			.filter((param): param is EventParam => !!param.name);
-	}
-
-	toFunctionParams(name: string, result: Result): Param[] {
-		const func = this.getFunctionByName(name);
-		const inputs = func?.inputs;
-		if (!inputs) {
-			return [];
-		}
-		return inputs
-			.map((input, index) => {
-				return {
-					name: input.name,
-					type: input.type,
-					components: input.components,
-					value: result[index],
-				} as Param;
-			})
-			.filter((param) => !!param.name);
-	}
-
-	toConstructorParams(result: Result): Param[] {
-		const constructor = this.getConstructor();
-		const inputs = constructor?.inputs;
-		if (!inputs) {
-			return [];
-		}
-		return inputs
-			.map((input, index) => {
-				return {
-					name: input.name,
-					type: input.type,
-					components: input.components,
-					value: result[index],
-				} as Param;
-			})
-			.filter((param) => !!param.name);
 	}
 
 	getFunctionSelector(name: string): string | undefined {
@@ -123,16 +60,18 @@ class Coder {
 		return `0x${hash}`;
 	}
 
-	decodeConstructor(data: string): Param[] {
+	decodeConstructor(data: string): Constructor | undefined {
 		const constructor = this.getConstructor();
 		const jsonInputs = constructor?.inputs;
 		if (!jsonInputs) {
-			return [];
+			return;
 		}
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
 		const result = defaultAbiCoder.decode(inputs, data);
-		const params = this.toConstructorParams(result);
-		return params;
+		return {
+			inputs,
+			values: result,
+		};
 	}
 
 	decodeEvent(topics: string[], data: string): Event | undefined {
@@ -154,24 +93,26 @@ class Coder {
 		// Decode data
 		const dataInputs = inputs.filter((input) => !input.indexed);
 		const dataResult = defaultAbiCoder.decode(dataInputs, data);
-		// Convert to params
+		// Concat
 		if (!event.name) {
 			return;
 		}
-		const topicParams = this.toEventParams(event.name, topicResult);
-		const dataParams = this.toEventParams(event.name, dataResult);
-		const allParams = [...topicParams, ...dataParams];
-		const params: EventParam[] = [];
+		let topicIndex = 0;
+		let dataIndex = 0;
+		const result: Result = [];
 		for (const input of inputs) {
-			const param = allParams.find((param) => param.name === input.name);
-			if (!param) {
-				continue;
+			if (input.indexed) {
+				result.push(topicResult[topicIndex]);
+				topicIndex++;
+			} else {
+				result.push(dataResult[dataIndex]);
+				dataIndex++;
 			}
-			params.push(param);
 		}
 		return {
 			name: event.name,
-			params,
+			inputs,
+			values: result,
 		};
 	}
 
@@ -190,27 +131,27 @@ class Coder {
 		if (!func.name) {
 			return;
 		}
-		const params = this.toFunctionParams(func.name, result);
 		return {
 			name: func.name,
-			params,
+			inputs,
+			values: result,
 		};
 	}
 
-	encodeConstructor(params: Param[]): string | undefined {
+	encodeConstructor(constructorData: Constructor): string | undefined {
 		const constructor = this.getConstructor();
 		const jsonInputs = constructor?.inputs;
 		if (!jsonInputs) {
 			return;
 		}
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
-		const result = Coder.toResult(params);
+		const result = constructorData.values;
 		const data = defaultAbiCoder.encode(inputs, result);
 		return `0x${data}`;
 	}
 
 	encodeEvent(eventData: Event): EventEncoding | undefined {
-		const { name, params } = eventData;
+		const { name, values } = eventData;
 		const event = this.getEventByName(name);
 		const jsonInputs = event?.inputs;
 		if (!jsonInputs) {
@@ -220,27 +161,25 @@ class Coder {
 		const eventSignature = Coder.getSignature(name, inputs);
 		const eventTopic = `0x${sha3.keccak256(eventSignature)}`;
 		// Group params by type
-		const topicParams: EventParam[] = [];
-		const dataParams: EventParam[] = [];
+		const topicResult: Result = [];
+		const dataResult: Result = [];
 		for (let i = 0; i < inputs.length; i++) {
 			const input = inputs[i];
-			const param = params[i];
+			const value = values[i];
 			if (input.indexed) {
-				topicParams.push(param);
+				topicResult.push(value);
 			} else {
-				dataParams.push(param);
+				dataResult.push(value);
 			}
 		}
 		// Encode topic params
 		const topicInputs = inputs.filter((input) => input.indexed);
 		const dataTopics = topicInputs.map((input, index) => {
-			const topicResult = Coder.toResult([topicParams[index]]);
-			return defaultAbiCoder.encode([input], topicResult);
+			return defaultAbiCoder.encode([input], [topicResult[index]]);
 		});
 		const topics = [eventTopic, ...dataTopics];
 		// Encode data params
 		const dataInputs = inputs.filter((input) => !input.indexed);
-		const dataResult = Coder.toResult(dataParams);
 		const data = defaultAbiCoder.encode(dataInputs, dataResult);
 
 		return {
@@ -250,7 +189,7 @@ class Coder {
 	}
 
 	encodeFunction(functionData: FunctionData): string | undefined {
-		const { name, params } = functionData;
+		const { name, values } = functionData;
 		const func = this.getFunctionByName(name);
 		const jsonInputs = func?.inputs;
 		if (!jsonInputs) {
@@ -259,8 +198,7 @@ class Coder {
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
 		const signature = Coder.getSignature(name, inputs);
 		const selector = sha3.keccak256(signature).substring(0, 8);
-		const result = Coder.toResult(params);
-		const argumentString = defaultAbiCoder.encode(inputs, result);
+		const argumentString = defaultAbiCoder.encode(inputs, values);
 		const argumentData = argumentString.substring(2);
 		const inputData = `0x${selector}${argumentData}`;
 		return inputData;
