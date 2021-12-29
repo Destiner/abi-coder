@@ -5,7 +5,8 @@ import {
 	Result,
 	defaultAbiCoder,
 } from '@ethersproject/abi';
-import * as sha3 from 'js-sha3';
+import { keccak256 } from '@ethersproject/keccak256';
+import { toUtf8Bytes } from '@ethersproject/strings';
 
 interface FunctionData {
 	name: string;
@@ -44,8 +45,8 @@ class Coder {
 		}
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
 		const signature = Coder.getSignature(name, inputs);
-		const hash = sha3.keccak256(signature);
-		return `0x${hash.substring(0, 8)}`;
+		const hash = sha3(signature);
+		return hash.substring(0, 10);
 	}
 
 	getEventTopic(name: string): string | undefined {
@@ -56,8 +57,7 @@ class Coder {
 		}
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
 		const signature = Coder.getSignature(name, inputs);
-		const hash = sha3.keccak256(signature);
-		return `0x${hash}`;
+		return sha3(signature);
 	}
 
 	decodeConstructor(data: string): Constructor | undefined {
@@ -159,7 +159,7 @@ class Coder {
 		}
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
 		const eventSignature = Coder.getSignature(name, inputs);
-		const eventTopic = `0x${sha3.keccak256(eventSignature)}`;
+		const eventTopic = sha3(eventSignature);
 		// Group params by type
 		const topicResult: Result = [];
 		const dataResult: Result = [];
@@ -197,7 +197,7 @@ class Coder {
 		}
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
 		const signature = Coder.getSignature(name, inputs);
-		const selector = sha3.keccak256(signature).substring(0, 8);
+		const selector = sha3(signature).substring(2, 10);
 		const argumentString = defaultAbiCoder.encode(inputs, values);
 		const argumentData = argumentString.substring(2);
 		const inputData = `0x${selector}${argumentData}`;
@@ -224,8 +224,8 @@ class Coder {
 			}
 			const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
 			const signature = Coder.getSignature(name, inputs);
-			const hash = sha3.keccak256(signature);
-			const funcSelector = `0x${hash.substring(0, 8)}`;
+			const hash = sha3(signature);
+			const funcSelector = hash.substring(0, 10);
 			return funcSelector === selector;
 		});
 		return func;
@@ -245,7 +245,7 @@ class Coder {
 			}
 			const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
 			const signature = Coder.getSignature(name, inputs);
-			const eventTopic = `0x${sha3.keccak256(signature)}`;
+			const eventTopic = sha3(signature);
 			return eventTopic === topic;
 		});
 		return event;
@@ -271,6 +271,10 @@ class Coder {
 		const functionSignature = `${name}(${typeString})`;
 		return functionSignature;
 	}
+}
+
+function sha3(input: string) {
+	return keccak256(toUtf8Bytes(input));
 }
 
 export default Coder;
