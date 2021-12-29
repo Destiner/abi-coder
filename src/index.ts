@@ -306,18 +306,14 @@ class Coder {
 	private static getSignature(name: string, inputs: ParamType[]): string {
 		const types: string[] = [];
 		for (const input of inputs) {
-			if (input.type === 'tuple') {
+			if (input.type.startsWith('tuple')) {
 				const tupleString = Coder.getSignature('', input.components);
-				types.push(tupleString);
-				continue;
+				const arrayArityString = input.type.substring('tuple'.length);
+				const type = `${tupleString}${arrayArityString}`;
+				types.push(type);
+			} else {
+				types.push(input.type);
 			}
-			if (input.type === 'tuple[]') {
-				const tupleString = Coder.getSignature('', input.components);
-				const arrayString = `${tupleString}[]`;
-				types.push(arrayString);
-				continue;
-			}
-			types.push(input.type);
 		}
 		const typeString = types.join(',');
 		const functionSignature = `${name}(${typeString})`;
