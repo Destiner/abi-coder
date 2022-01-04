@@ -21,12 +21,12 @@
 	},
 	"license": "MIT",
 	"dependencies": {
-		"@ethersproject/abi": "^5.5.0",
-		"@ethersproject/keccak256": "^5.5.0",
-		"@ethersproject/strings": "^5.5.0"
+		"@ethersproject/abi": "^5.0.0",
+		"@ethersproject/keccak256": "^5.0.0",
+		"@ethersproject/strings": "^5.0.0"
 	},
 	"devDependencies": {
-		"@ethersproject/bignumber": "^5.5.0",
+		"@ethersproject/bignumber": "^5.0.0",
 		"@types/mocha": "^9.0.0",
 		"@types/node": "^17.0.5",
 		"@typescript-eslint/eslint-plugin": "^5.8.0",
