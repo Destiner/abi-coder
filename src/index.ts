@@ -159,20 +159,18 @@ class Coder {
 		};
 	}
 
-	encodeConstructor(constructorData: Constructor): string {
+	encodeConstructor(values: Result): string {
 		const constructor = this.getConstructor();
 		const jsonInputs = constructor?.inputs;
 		if (!jsonInputs) {
 			throw Error;
 		}
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
-		const result = constructorData.values;
-		const data = defaultAbiCoder.encode(inputs, result);
+		const data = defaultAbiCoder.encode(inputs, values);
 		return `0x${data}`;
 	}
 
-	encodeEvent(eventData: Event): EventEncoding {
-		const { name, values } = eventData;
+	encodeEvent(name: string, values: Result): EventEncoding {
 		const event = this.getEventByName(name);
 		const jsonInputs = event?.inputs;
 		if (!jsonInputs) {
@@ -209,8 +207,7 @@ class Coder {
 		};
 	}
 
-	encodeFunction(functionData: FunctionData): string {
-		const { name, values } = functionData;
+	encodeFunction(name: string, values: Result): string {
 		const func = this.getFunctionByName(name);
 		const jsonInputs = func?.inputs;
 		if (!jsonInputs) {
@@ -225,15 +222,14 @@ class Coder {
 		return inputData;
 	}
 
-	encodeFunctionOutput(functionData: FunctionOutputData): string {
-		const func = this.getFunctionByName(functionData.name);
+	encodeFunctionOutput(name: string, values: Result): string {
+		const func = this.getFunctionByName(name);
 		const jsonOutputs = func.outputs;
 		if (!jsonOutputs) {
 			throw Error;
 		}
 		const outputs = jsonOutputs.map((output) => ParamType.fromObject(output));
-		const result = functionData.values;
-		return defaultAbiCoder.encode(outputs, result);
+		return defaultAbiCoder.encode(outputs, values);
 	}
 
 	private getConstructor(): JsonFragment {
