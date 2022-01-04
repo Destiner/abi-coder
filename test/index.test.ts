@@ -5,6 +5,7 @@ import Coder from '../src';
 
 import * as erc20Abi from './abi/erc20.json';
 import * as marketAbi from './abi/market.json';
+import * as swapperAbi from './abi/swapper.json';
 import * as tokenAbi from './abi/token.json';
 import * as wethAbi from './abi/weth.json';
 import * as zeroExAbi from './abi/zeroEx.json';
@@ -12,6 +13,7 @@ import * as zeroExAbi from './abi/zeroEx.json';
 describe('Coder', () => {
 	const erc20Coder = new Coder(erc20Abi);
 	const marketCoder = new Coder(marketAbi);
+	const swapperCoder = new Coder(swapperAbi);
 	const tokenCoder = new Coder(tokenAbi);
 	const wethCoder = new Coder(wethAbi);
 	const zeroExCoder = new Coder(zeroExAbi);
@@ -19,6 +21,7 @@ describe('Coder', () => {
 	describe('#getFunctionSelector', () => {
 		it('generates function selector', () => {
 			expect(wethCoder.getFunctionSelector('transfer')).toEqual('0xa9059cbb');
+			expect(zeroExCoder.getFunctionSelector('owner')).toEqual('0x8da5cb5b');
 			expect(erc20Coder.getFunctionSelector('totalSupply')).toEqual(
 				'0x18160ddd',
 			);
@@ -249,6 +252,15 @@ describe('Coder', () => {
 
 	describe('#decodeFunctionOutput', () => {
 		it('decodes function output with no arguments', () => {
+			const swapFunctionOutput = swapperCoder.decodeFunctionOutput(
+				'swap',
+				'0x',
+			);
+			expect(swapFunctionOutput.outputs.length).toEqual(
+				swapFunctionOutput.values.length,
+			);
+			expect(swapFunctionOutput.values).toEqual([]);
+
 			const registrerSellersFunctionOutput = marketCoder.decodeFunctionOutput(
 				'registrerSellers',
 				'0x',
@@ -269,6 +281,28 @@ describe('Coder', () => {
 			);
 			expect(totalSupplyFunctionOutput.values).toEqual([
 				BigNumber.from('500000000000000000'),
+			]);
+
+			const ownerFunctionOutput = zeroExCoder.decodeFunctionOutput(
+				'owner',
+				'0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+			);
+			expect(ownerFunctionOutput.outputs.length).toEqual(
+				ownerFunctionOutput.values.length,
+			);
+			expect(ownerFunctionOutput.values).toEqual([
+				'0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+			]);
+
+			const balanceOfFunctionOutput = erc20Coder.decodeFunctionOutput(
+				'balanceOf',
+				'0x000000000000000000000000000000000000000000000000bb59a27953c60000',
+			);
+			expect(balanceOfFunctionOutput.outputs.length).toEqual(
+				balanceOfFunctionOutput.values.length,
+			);
+			expect(balanceOfFunctionOutput.values).toEqual([
+				BigNumber.from('13500000000000000000'),
 			]);
 		});
 
@@ -502,6 +536,27 @@ describe('Coder', () => {
 			expect(
 				wethCoder.encodeFunction({ name: 'deposit', inputs: [], values: [] }),
 			).toEqual('0xd0e30db0');
+
+			expect(
+				zeroExCoder.encodeFunction({ name: 'owner', inputs: [], values: [] }),
+			).toEqual('0x8da5cb5b');
+		});
+
+		it('encodes function with 1 argument', () => {
+			expect(
+				erc20Coder.encodeFunction({
+					name: 'balanceOf',
+					inputs: [
+						{
+							name: '_owner',
+							type: 'address',
+						},
+					],
+					values: ['0x1a9c8182c09f50c8318d769245bea52c32be35bc'],
+				}),
+			).toEqual(
+				'0x70a082310000000000000000000000001a9c8182c09f50c8318d769245bea52c32be35bc',
+			);
 		});
 
 		it('encodes function with 2 arguments', () => {
@@ -529,6 +584,51 @@ describe('Coder', () => {
 		});
 
 		it('encodes function with a tuple', () => {
+			expect(
+				swapperCoder.encodeFunction({
+					name: 'swap',
+					inputs: [
+						{
+							components: [
+								{
+									internalType: 'uint256',
+									name: 'inAmount',
+									type: 'uint256',
+								},
+								{
+									internalType: 'address',
+									name: 'inAsset',
+									type: 'address',
+								},
+								{
+									internalType: 'address',
+									name: 'outAsset',
+									type: 'address',
+								},
+							],
+							internalType: 'struct Quote',
+							name: 'quote',
+							type: 'tuple',
+						},
+						{
+							internalType: 'uint64',
+							name: 'deadline',
+							type: 'uint64',
+						},
+					],
+					values: [
+						{
+							inAmount: '250000000',
+							inAsset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+							outAsset: '0x6b175474e89094c44da98b954eedeac495271d0f',
+						},
+						'1633000000',
+					],
+				}),
+			).toEqual(
+				'0xa18d33e1000000000000000000000000000000000000000000000000000000000ee6b280000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000006b175474e89094c44da98b954eedeac495271d0f0000000000000000000000000000000000000000000000000000000061559a40',
+			);
+
 			expect(
 				zeroExCoder.encodeFunction({
 					name: 'matchOrders',
