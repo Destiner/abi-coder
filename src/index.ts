@@ -326,3 +326,5 @@ function sha3(input: string) {
 }
 
 export default Coder;
+
+export { FunctionData, FunctionOutputData, Constructor, Event, EventEncoding };
