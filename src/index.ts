@@ -166,8 +166,7 @@ class Coder {
 			throw Error;
 		}
 		const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
-		const data = defaultAbiCoder.encode(inputs, values);
-		return `0x${data}`;
+		return defaultAbiCoder.encode(inputs, values);
 	}
 
 	encodeEvent(name: string, values: any[]): EventEncoding {
