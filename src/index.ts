@@ -159,7 +159,7 @@ class Coder {
 		};
 	}
 
-	encodeConstructor(values: Result): string {
+	encodeConstructor(values: any[]): string {
 		const constructor = this.getConstructor();
 		const jsonInputs = constructor?.inputs;
 		if (!jsonInputs) {
@@ -170,7 +170,7 @@ class Coder {
 		return `0x${data}`;
 	}
 
-	encodeEvent(name: string, values: Result): EventEncoding {
+	encodeEvent(name: string, values: any[]): EventEncoding {
 		const event = this.getEventByName(name);
 		const jsonInputs = event?.inputs;
 		if (!jsonInputs) {
@@ -181,7 +181,7 @@ class Coder {
 		const eventTopic = sha3(eventSignature);
 		// Group params by type
 		const topicResult: Result = [];
-		const dataResult: Result = [];
+		const dataResult: any[] = [];
 		for (let i = 0; i < inputs.length; i++) {
 			const input = inputs[i];
 			const value = values[i];
@@ -207,7 +207,7 @@ class Coder {
 		};
 	}
 
-	encodeFunction(name: string, values: Result): string {
+	encodeFunction(name: string, values: any[]): string {
 		const func = this.getFunctionByName(name);
 		const jsonInputs = func?.inputs;
 		if (!jsonInputs) {
@@ -222,7 +222,7 @@ class Coder {
 		return inputData;
 	}
 
-	encodeFunctionOutput(name: string, values: Result): string {
+	encodeFunctionOutput(name: string, values: any[]): string {
 		const func = this.getFunctionByName(name);
 		const jsonOutputs = func.outputs;
 		if (!jsonOutputs) {
