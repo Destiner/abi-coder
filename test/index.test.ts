@@ -1,14 +1,14 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { expect } from 'earljs';
+import { describe, test, expect } from 'vitest';
 
 import Coder from '../src';
 
-import * as erc20Abi from './abi/erc20.json';
-import * as marketAbi from './abi/market.json';
-import * as swapperAbi from './abi/swapper.json';
-import * as tokenAbi from './abi/token.json';
-import * as wethAbi from './abi/weth.json';
-import * as zeroExAbi from './abi/zeroEx.json';
+import erc20Abi from './abi/erc20.json';
+import marketAbi from './abi/market.json';
+import swapperAbi from './abi/swapper.json';
+import tokenAbi from './abi/token.json';
+import wethAbi from './abi/weth.json';
+import zeroExAbi from './abi/zeroEx.json';
 
 describe('Coder', () => {
 	const erc20Coder = new Coder(erc20Abi);
@@ -19,7 +19,7 @@ describe('Coder', () => {
 	const zeroExCoder = new Coder(zeroExAbi);
 
 	describe('#getFunctionSelector', () => {
-		it('generates function selector', () => {
+		test('generates function selector', () => {
 			expect(wethCoder.getFunctionSelector('transfer')).toEqual('0xa9059cbb');
 			expect(zeroExCoder.getFunctionSelector('owner')).toEqual('0x8da5cb5b');
 			expect(erc20Coder.getFunctionSelector('totalSupply')).toEqual(
@@ -32,7 +32,7 @@ describe('Coder', () => {
 	});
 
 	describe('#getEventTopic', () => {
-		it('generates event topic', () => {
+		test('generates event topic', () => {
 			expect(marketCoder.getEventTopic('Init')).toEqual(
 				'0x57a86f7d14ccde89e22870afe839e3011216827daa9b24e18629f0a1e9d6cc14',
 			);
@@ -46,7 +46,7 @@ describe('Coder', () => {
 	});
 
 	describe('#decodeEvent', () => {
-		it('decodes event with no arguments', () => {
+		test('decodes event with no arguments', () => {
 			const initEvent = marketCoder.decodeEvent(
 				['0x57a86f7d14ccde89e22870afe839e3011216827daa9b24e18629f0a1e9d6cc14'],
 				'0x',
@@ -56,7 +56,7 @@ describe('Coder', () => {
 			expect(initEvent.values).toEqual([]);
 		});
 
-		it('decodes event with 2 arguments', () => {
+		test('decodes event with 2 arguments', () => {
 			const withdrawalEvent = wethCoder.decodeEvent(
 				[
 					'0x7fcf532c15f0a6db0bd6d0e038bea71d30d808c7d98cb3bf7268a95bf5081b65',
@@ -74,7 +74,7 @@ describe('Coder', () => {
 			]);
 		});
 
-		it('decodes event with 3 arguments', () => {
+		test('decodes event with 3 arguments', () => {
 			const transferEvent = erc20Coder.decodeEvent(
 				[
 					'0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
@@ -92,7 +92,7 @@ describe('Coder', () => {
 			]);
 		});
 
-		it('decodes event with tuple', () => {
+		test('decodes event with tuple', () => {
 			const fillEvent = zeroExCoder.decodeEvent(
 				[
 					'0x6869791f0a34781b29882982cc39e882768cf2c96995c2a110c577c53bc932d5',
@@ -124,7 +124,7 @@ describe('Coder', () => {
 	});
 
 	describe('#decodeFunction', () => {
-		it('decodes function with no arguments', () => {
+		test('decodes function with no arguments', () => {
 			const depositFunction = wethCoder.decodeFunction('0xd0e30db0');
 			expect(depositFunction.name).toEqual('deposit');
 			expect(depositFunction.inputs.length).toEqual(
@@ -133,7 +133,7 @@ describe('Coder', () => {
 			expect(depositFunction.values).toEqual([]);
 		});
 
-		it('decodes function with 2 arguments', () => {
+		test('decodes function with 2 arguments', () => {
 			const transferFunction = erc20Coder.decodeFunction(
 				'0xa9059cbb000000000000000000000000694c6aea9444876d4fa9375fc9089c370f8e9eda0000000000000000000000000000000000000000000000370c9b5ef669c35300',
 			);
@@ -147,7 +147,7 @@ describe('Coder', () => {
 			]);
 		});
 
-		it('decodes function with tuples', () => {
+		test('decodes function with tuples', () => {
 			const matchOrdersFunction = zeroExCoder.decodeFunction(
 				'0x88ec79fb00000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000340000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000006800000000000000000000000007b1886e49ab5433bb46f7258548092dc8cdca28b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001e5b8fa8fe2ac00000000000000000000000000000000000000000000000000000000002057498305000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000061c14b5a0000000000000000000000000000000000000000000000000000017ddb0db67600000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000028000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007b1886e49ab5433bb46f7258548092dc8cdca28b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000001100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004c910e13ea0000000000000000000000000000000000000000000000047cf0a3a070260000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000061c14b760000000000000000000000000000000000000000000000000000017ddb0e59b100000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000028000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000421ba64ca0f6f8ca7943163ec02ff09cad3e54c2ff74fc325849cd9f8cbee0826cee16d8fc0e36ed44fe9695499e6803768668a4d0a96ae4da7e5fe8d86604a9ef1c0300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000421cb4ca963bc1bf9e9ffe3c5e8ea2f9c38a716cd0ff0ec26a808dd31813d2651bc039dd04a26f9ffbfde14ed84e466ba9dcf74a84aedeacd4e375a1620dd1e9273603000000000000000000000000000000000000000000000000000000000000',
 			);
@@ -193,7 +193,7 @@ describe('Coder', () => {
 			]);
 		});
 
-		it('decodes function with multidimensional tuple array', () => {
+		test('decodes function with multidimensional tuple array', () => {
 			const updateMarketsFunction = marketCoder.decodeFunction(
 				'0x0d85954c00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001e00000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000003dca2ecbbfadbcbf83cfd456e1657a52e170cbf30000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000002300000000000000000000000000000000000000000000000000000000000000054170706c650000000000000000000000000000000000000000000000000000000000000000000000000000003dca2ecbbfadbcbf83cfd456e1657a52e170cbf3000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000004506561720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000001f56bff579f7a57326d07823a00a7ff0e57cbb4f00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000078000000000000000000000000000000000000000000000000000000000000000550617065720000000000000000000000000000000000000000000000000000000000000000000000000000001f56bff579f7a57326d07823a00a7ff0e57cbb4f00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000032000000000000000000000000000000000000000000000000000000000000000350656e00000000000000000000000000000000000000000000000000000000000000000000000000000000001f56bff579f7a57326d07823a00a7ff0e57cbb4f000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000007537461706c657300000000000000000000000000000000000000000000000000',
 			);
@@ -236,7 +236,7 @@ describe('Coder', () => {
 			]);
 		});
 
-		it('decodes function with tuple of tuple', () => {
+		test('decodes function with tuple of tuple', () => {
 			const addSellerFunction = marketCoder.decodeFunction(
 				'0xe92a0f7900000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000044d61726b0000000000000000000000000000000000000000000000000000000000000000000000000000000000192fb10df37c9fb26829eb2cc623cd1bf599e80000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000d0000000000000000000000000000000000000000000000000000000000000004426c756500000000000000000000000000000000000000000000000000000000',
 			);
@@ -251,7 +251,7 @@ describe('Coder', () => {
 	});
 
 	describe('#decodeFunctionOutput', () => {
-		it('decodes function output with no arguments', () => {
+		test('decodes function output with no arguments', () => {
 			const swapFunctionOutput = swapperCoder.decodeFunctionOutput(
 				'swap',
 				'0x',
@@ -271,7 +271,7 @@ describe('Coder', () => {
 			expect(registrerSellersFunctionOutput.values).toEqual([]);
 		});
 
-		it('decodes function output with an argument', () => {
+		test('decodes function output with an argument', () => {
 			const totalSupplyFunctionOutput = erc20Coder.decodeFunctionOutput(
 				'totalSupply',
 				'0x00000000000000000000000000000000000000000000000006f05b59d3b20000',
@@ -306,7 +306,7 @@ describe('Coder', () => {
 			]);
 		});
 
-		it('decodes function output with a tuple', () => {
+		test('decodes function output with a tuple', () => {
 			const batchFillOrdersNoThrowFunctionOutput =
 				zeroExCoder.decodeFunctionOutput(
 					'batchFillOrdersNoThrow',
@@ -330,7 +330,7 @@ describe('Coder', () => {
 	});
 
 	describe('#decodeConstructor', () => {
-		it('decodes constructor with 2 arguments', () => {
+		test('decodes constructor with 2 arguments', () => {
 			const constructor = tokenCoder.decodeConstructor(
 				'0x44616920537461626c65636f696e0000000000000000000000000000000000004441490000000000000000000000000000000000000000000000000000000000',
 			);
@@ -344,7 +344,7 @@ describe('Coder', () => {
 	});
 
 	describe('#encodeEvent', () => {
-		it('encodes event with no arguments', () => {
+		test('encodes event with no arguments', () => {
 			expect(marketCoder.encodeEvent('Init', [])).toEqual({
 				topics: [
 					'0x57a86f7d14ccde89e22870afe839e3011216827daa9b24e18629f0a1e9d6cc14',
@@ -353,7 +353,7 @@ describe('Coder', () => {
 			});
 		});
 
-		it('encodes event with 2 arguments', () => {
+		test('encodes event with 2 arguments', () => {
 			expect(
 				wethCoder.encodeEvent('Withdrawal', [
 					'0x8939b49a0983a9e6ef416c23ccd8b04af0e8a006',
@@ -368,7 +368,7 @@ describe('Coder', () => {
 			});
 		});
 
-		it('encodes event with 3 arguments', () => {
+		test('encodes event with 3 arguments', () => {
 			expect(
 				erc20Coder.encodeEvent('Transfer', [
 					'0xb5cfcb4d4745cbbd252945856e1b6eaadcf2fc4e',
@@ -385,7 +385,7 @@ describe('Coder', () => {
 			});
 		});
 
-		it('encodes event with a tuple', () => {
+		test('encodes event with a tuple', () => {
 			expect(
 				zeroExCoder.encodeEvent('Fill', [
 					'0x7b1886e49ab5433bb46f7258548092dc8cdca28b',
@@ -416,13 +416,13 @@ describe('Coder', () => {
 	});
 
 	describe('#encodeFunction', () => {
-		it('encodes function with no arguments', () => {
+		test('encodes function with no arguments', () => {
 			expect(wethCoder.encodeFunction('deposit', [])).toEqual('0xd0e30db0');
 
 			expect(zeroExCoder.encodeFunction('owner', [])).toEqual('0x8da5cb5b');
 		});
 
-		it('encodes function with 1 argument', () => {
+		test('encodes function with 1 argument', () => {
 			expect(
 				erc20Coder.encodeFunction('balanceOf', [
 					'0x1a9c8182c09f50c8318d769245bea52c32be35bc',
@@ -432,7 +432,7 @@ describe('Coder', () => {
 			);
 		});
 
-		it('encodes function with 2 arguments', () => {
+		test('encodes function with 2 arguments', () => {
 			expect(
 				erc20Coder.encodeFunction('transfer', [
 					'0x694c6aea9444876d4fA9375fC9089C370F8E9edA',
@@ -443,7 +443,7 @@ describe('Coder', () => {
 			);
 		});
 
-		it('encodes function with a tuple', () => {
+		test('encodes function with a tuple', () => {
 			expect(
 				swapperCoder.encodeFunction('swap', [
 					{
@@ -503,7 +503,7 @@ describe('Coder', () => {
 			);
 		});
 
-		it('encodes function with multidimensional tuple', () => {
+		test('encodes function with multidimensional tuple', () => {
 			expect(
 				marketCoder.encodeFunction('updateMarkets', [
 					[
@@ -523,7 +523,7 @@ describe('Coder', () => {
 			);
 		});
 
-		it('encodes function with tuple of tuple', () => {
+		test('encodes function with tuple of tuple', () => {
 			expect(
 				marketCoder.encodeFunction('addSeller', [
 					['Mark', ['0x00192Fb10dF37c9FB26829eb2CC623cd1BF599E8', 'Blue', 13]],
@@ -535,13 +535,13 @@ describe('Coder', () => {
 	});
 
 	describe('#encodeFunctionOutput', () => {
-		it('encodes function output with no arguments', () => {
+		test('encodes function output with no arguments', () => {
 			expect(marketCoder.encodeFunctionOutput('registrerSellers', [])).toEqual(
 				'0x',
 			);
 		});
 
-		it('encodes function output with an argument', () => {
+		test('encodes function output with an argument', () => {
 			expect(
 				erc20Coder.encodeFunctionOutput('totalSupply', [
 					BigNumber.from('500000000000000000'),
@@ -551,7 +551,7 @@ describe('Coder', () => {
 			);
 		});
 
-		it('encodes function output with a tuple', () => {
+		test('encodes function output with a tuple', () => {
 			expect(
 				zeroExCoder.encodeFunctionOutput('batchFillOrdersNoThrow', [
 					[
@@ -571,7 +571,7 @@ describe('Coder', () => {
 	});
 
 	describe('#encodeConstructor', () => {
-		it('encodes constructor with 2 arguments', () => {
+		test('encodes constructor with 2 arguments', () => {
 			expect(
 				tokenCoder.encodeConstructor([
 					'0x44616920537461626c65636f696e000000000000000000000000000000000000',
