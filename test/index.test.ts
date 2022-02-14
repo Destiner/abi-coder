@@ -157,44 +157,80 @@ describe('Coder', () => {
       expect(matchOrdersFunction.inputs.length).toEqual(
         matchOrdersFunction.values.length,
       );
-      // expect(matchOrdersFunction.values[0]).toEqual([
-      //  '0x7b1886e49AB5433bb46f7258548092DC8CdCA28B',
-      //  '0x0000000000000000000000000000000000000000',
-      //  '0x1000000000000000000000000000000000000011',
-      //  '0x0000000000000000000000000000000000000000',
-      //  BigNumber.from('35000000000000000000'),
-      //  BigNumber.from('138903388933'),
-      //  BigNumber.from('0'),
-      //  BigNumber.from('0'),
-      //  BigNumber.from('1640057690'),
-      //  BigNumber.from('1640057648758'),
-      //  '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-      //  '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      //  '0x',
-      //  '0x',
-      // ]);
-      // expect(matchOrdersFunction.values[1]).toEqual([
-      //  '0x7b1886e49AB5433bb46f7258548092DC8CdCA28B',
-      //  '0x0000000000000000000000000000000000000000',
-      //  '0x1000000000000000000000000000000000000011',
-      //  '0x0000000000000000000000000000000000000000',
-      //  BigNumber.from('328851133418'),
-      //  BigNumber.from('82789851859423461376'),
-      //  BigNumber.from('0'),
-      //  BigNumber.from('0'),
-      //  BigNumber.from('1640057718'),
-      //  BigNumber.from('1640057690545'),
-      //  '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      //  '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-      //  '0x',
-      //  '0x',
-      // ]);
-      // expect(matchOrdersFunction.values[2]).toEqual(
-      //  '0x1ba64ca0f6f8ca7943163ec02ff09cad3e54c2ff74fc325849cd9f8cbee0826cee16d8fc0e36ed44fe9695499e6803768668a4d0a96ae4da7e5fe8d86604a9ef1c03',
-      // );
-      // expect(matchOrdersFunction.values[3]).toEqual(
-      //  '0x1cb4ca963bc1bf9e9ffe3c5e8ea2f9c38a716cd0ff0ec26a808dd31813d2651bc039dd04a26f9ffbfde14ed84e466ba9dcf74a84aedeacd4e375a1620dd1e9273603',
-      // );
+      expect(matchOrdersFunction.values[0][0]).toEqual(
+        '0x7b1886e49AB5433bb46f7258548092DC8CdCA28B',
+      );
+      expect(matchOrdersFunction.values[0][1]).toEqual(
+        '0x0000000000000000000000000000000000000000',
+      );
+      expect(matchOrdersFunction.values[0][2]).toEqual(
+        '0x1000000000000000000000000000000000000011',
+      );
+      expect(matchOrdersFunction.values[0][3]).toEqual(
+        '0x0000000000000000000000000000000000000000',
+      );
+      expect(matchOrdersFunction.values[0][4]).toEqual(
+        BigNumber.from('35000000000000000000'),
+      );
+      expect(matchOrdersFunction.values[0][5]).toEqual(
+        BigNumber.from('138903388933'),
+      );
+      expect(matchOrdersFunction.values[0][6]).toEqual(BigNumber.from('0'));
+      expect(matchOrdersFunction.values[0][7]).toEqual(BigNumber.from('0'));
+      expect(matchOrdersFunction.values[0][8]).toEqual(
+        BigNumber.from('1640057690'),
+      );
+      expect(matchOrdersFunction.values[0][9]).toEqual(
+        BigNumber.from('1640057648758'),
+      );
+      expect(matchOrdersFunction.values[0][10]).toEqual(
+        '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      );
+      expect(matchOrdersFunction.values[0][11]).toEqual(
+        '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      );
+      expect(matchOrdersFunction.values[0][12]).toEqual('0x');
+      expect(matchOrdersFunction.values[0][13]).toEqual('0x');
+      expect(matchOrdersFunction.values[1][0]).toEqual(
+        '0x7b1886e49AB5433bb46f7258548092DC8CdCA28B',
+      );
+      expect(matchOrdersFunction.values[1][1]).toEqual(
+        '0x0000000000000000000000000000000000000000',
+      );
+      expect(matchOrdersFunction.values[1][2]).toEqual(
+        '0x1000000000000000000000000000000000000011',
+      );
+      expect(matchOrdersFunction.values[1][3]).toEqual(
+        '0x0000000000000000000000000000000000000000',
+      );
+      expect(matchOrdersFunction.values[1][4]).toEqual(
+        BigNumber.from('328851133418'),
+      );
+      expect(matchOrdersFunction.values[1][5]).toEqual(
+        BigNumber.from('82789851859423461376'),
+      );
+      expect(matchOrdersFunction.values[1][6]).toEqual(BigNumber.from('0'));
+      expect(matchOrdersFunction.values[1][7]).toEqual(BigNumber.from('0'));
+      expect(matchOrdersFunction.values[1][8]).toEqual(
+        BigNumber.from('1640057718'),
+      );
+      expect(matchOrdersFunction.values[1][9]).toEqual(
+        BigNumber.from('1640057690545'),
+      );
+      expect(matchOrdersFunction.values[1][10]).toEqual(
+        '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      );
+      expect(matchOrdersFunction.values[1][11]).toEqual(
+        '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      );
+      expect(matchOrdersFunction.values[1][12]).toEqual('0x');
+      expect(matchOrdersFunction.values[1][13]).toEqual('0x');
+      expect(matchOrdersFunction.values[2]).toEqual(
+        '0x1ba64ca0f6f8ca7943163ec02ff09cad3e54c2ff74fc325849cd9f8cbee0826cee16d8fc0e36ed44fe9695499e6803768668a4d0a96ae4da7e5fe8d86604a9ef1c03',
+      );
+      expect(matchOrdersFunction.values[3]).toEqual(
+        '0x1cb4ca963bc1bf9e9ffe3c5e8ea2f9c38a716cd0ff0ec26a808dd31813d2651bc039dd04a26f9ffbfde14ed84e466ba9dcf74a84aedeacd4e375a1620dd1e9273603',
+      );
     });
 
     test('decodes function with multidimensional tuple array', () => {
@@ -205,37 +241,42 @@ describe('Coder', () => {
       expect(updateMarketsFunction.inputs.length).toEqual(
         updateMarketsFunction.values.length,
       );
-      // expect(updateMarketsFunction.values[0]).toEqual([
-      //  [
-      //    [
-      //      '0x3DCa2eCBBfadbCbf83CfD456E1657A52E170CbF3',
-      //      'Apple',
-      //      BigNumber.from(35),
-      //    ],
-      //    [
-      //      '0x3DCa2eCBBfadbCbf83CfD456E1657A52E170CbF3',
-      //      'Pear',
-      //      BigNumber.from(32),
-      //    ],
-      //  ],
-      //  [
-      //    [
-      //      '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
-      //      'Paper',
-      //      BigNumber.from(120),
-      //    ],
-      //    [
-      //      '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
-      //      'Pen',
-      //      BigNumber.from(50),
-      //    ],
-      //    [
-      //      '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
-      //      'Staples',
-      //      BigNumber.from(8),
-      //    ],
-      //  ],
-      // ]);
+
+      expect(updateMarketsFunction.values[0][0][0][0]).toEqual(
+        '0x3DCa2eCBBfadbCbf83CfD456E1657A52E170CbF3',
+      );
+      expect(updateMarketsFunction.values[0][0][0][1]).toEqual('Apple');
+      expect(updateMarketsFunction.values[0][0][0][2]).toEqual(
+        BigNumber.from(35),
+      );
+      expect(updateMarketsFunction.values[0][0][1][0]).toEqual(
+        '0x3DCa2eCBBfadbCbf83CfD456E1657A52E170CbF3',
+      );
+      expect(updateMarketsFunction.values[0][0][1][1]).toEqual('Pear');
+      expect(updateMarketsFunction.values[0][0][1][2]).toEqual(
+        BigNumber.from(32),
+      );
+      expect(updateMarketsFunction.values[0][1][0][0]).toEqual(
+        '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
+      );
+      expect(updateMarketsFunction.values[0][1][0][1]).toEqual('Paper');
+      expect(updateMarketsFunction.values[0][1][0][2]).toEqual(
+        BigNumber.from(120),
+      );
+      expect(updateMarketsFunction.values[0][1][1][0]).toEqual(
+        '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
+      );
+      expect(updateMarketsFunction.values[0][1][1][1]).toEqual('Pen');
+      expect(updateMarketsFunction.values[0][1][1][2]).toEqual(
+        BigNumber.from(50),
+      );
+      expect(updateMarketsFunction.values[0][1][2][0]).toEqual(
+        '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
+      );
+      expect(updateMarketsFunction.values[0][1][2][1]).toEqual('Staples');
+      expect(updateMarketsFunction.values[0][1][2][2]).toEqual(
+        BigNumber.from(8),
+      );
     });
 
     test('decodes function with tuple of tuple', () => {
