@@ -1,127 +1,127 @@
 [
-	{
-		"anonymous": false,
-		"inputs": [],
-		"name": "Init",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"components": [
-					{
-						"name": "seller",
-						"type": "address"
-					},
-					{
-						"name": "name",
-						"type": "string"
-					},
-					{
-						"name": "price",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct Good[]",
-				"name": "goods",
-				"type": "tuple[]",
-				"indexed": false
-			},
-			{
-				"name": "sellerIds",
-				"type": "uint8[]",
-				"indexed": false
-			}
-		],
-		"name": "NewMarketplace",
-		"type": "event"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "sellerIds",
-				"type": "uint8[]"
-			},
-			{
-				"name": "id",
-				"type": "bytes"
-			}
-		],
-		"name": "registrerSellers",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"components": [
-					{
-						"name": "seller",
-						"type": "address"
-					},
-					{
-						"name": "name",
-						"type": "string"
-					},
-					{
-						"name": "price",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct Good[][]",
-				"name": "goods",
-				"type": "tuple[][]"
-			}
-		],
-		"name": "updateMarkets",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"components": [
-					{
-						"name": "name",
-						"type": "string"
-					},
-					{
-						"components": [
-							{
-								"name": "team",
-								"type": "address"
-							},
-							{
-								"name": "name",
-								"type": "string"
-							},
-							{
-								"name": "id",
-								"type": "uint16"
-							}
-						],
-						"internalType": "struct Team",
-						"name": "team",
-						"type": "tuple"
-					}
-				],
-				"internalType": "struct Seller",
-				"name": "seller",
-				"type": "tuple"
-			}
-		],
-		"name": "addSeller",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	}
+  {
+    "anonymous": false,
+    "inputs": [],
+    "name": "Init",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "components": [
+          {
+            "name": "seller",
+            "type": "address"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "price",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Good[]",
+        "name": "goods",
+        "type": "tuple[]",
+        "indexed": false
+      },
+      {
+        "name": "sellerIds",
+        "type": "uint8[]",
+        "indexed": false
+      }
+    ],
+    "name": "NewMarketplace",
+    "type": "event"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "sellerIds",
+        "type": "uint8[]"
+      },
+      {
+        "name": "id",
+        "type": "bytes"
+      }
+    ],
+    "name": "registrerSellers",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "components": [
+          {
+            "name": "seller",
+            "type": "address"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "price",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Good[][]",
+        "name": "goods",
+        "type": "tuple[][]"
+      }
+    ],
+    "name": "updateMarkets",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "components": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "components": [
+              {
+                "name": "team",
+                "type": "address"
+              },
+              {
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "name": "id",
+                "type": "uint16"
+              }
+            ],
+            "internalType": "struct Team",
+            "name": "team",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct Seller",
+        "name": "seller",
+        "type": "tuple"
+      }
+    ],
+    "name": "addSeller",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
 ]
