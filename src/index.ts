@@ -36,6 +36,9 @@ interface EventEncoding {
   data: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Values = any[];
+
 class Coder {
   private abi: JsonFragment[];
 
@@ -159,7 +162,7 @@ class Coder {
     };
   }
 
-  encodeConstructor(values: any[]): string {
+  encodeConstructor(values: Values): string {
     const constructor = this.getConstructor();
     const jsonInputs = constructor?.inputs;
     if (!jsonInputs) {
@@ -169,7 +172,7 @@ class Coder {
     return defaultAbiCoder.encode(inputs, values);
   }
 
-  encodeEvent(name: string, values: any[]): EventEncoding {
+  encodeEvent(name: string, values: Values): EventEncoding {
     const event = this.getEventByName(name);
     const jsonInputs = event?.inputs;
     if (!jsonInputs) {
@@ -180,7 +183,7 @@ class Coder {
     const eventTopic = sha3(eventSignature);
     // Group params by type
     const topicResult: Result = [];
-    const dataResult: any[] = [];
+    const dataResult: Values = [];
     for (let i = 0; i < inputs.length; i++) {
       const input = inputs[i];
       const value = values[i];
@@ -206,7 +209,7 @@ class Coder {
     };
   }
 
-  encodeFunction(name: string, values: any[]): string {
+  encodeFunction(name: string, values: Values): string {
     const func = this.getFunctionByName(name);
     const jsonInputs = func?.inputs;
     if (!jsonInputs) {
@@ -221,7 +224,7 @@ class Coder {
     return inputData;
   }
 
-  encodeFunctionOutput(name: string, values: any[]): string {
+  encodeFunctionOutput(name: string, values: Values): string {
     const func = this.getFunctionByName(name);
     const jsonOutputs = func.outputs;
     if (!jsonOutputs) {
@@ -316,7 +319,7 @@ class Coder {
   }
 }
 
-function sha3(input: string) {
+function sha3(input: string): string {
   return keccak256(toUtf8Bytes(input));
 }
 
