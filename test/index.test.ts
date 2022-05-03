@@ -92,6 +92,28 @@ describe('Coder', () => {
       ]);
     });
 
+    test('decodes event with 7 arguments', () => {
+      const swapEvent = swapperCoder.decodeEvent(
+        [
+          '0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67',
+          '0x0000000000000000000000005f62593c70069abb35dfe2b63db969e8906609d6',
+          '0x0000000000000000000000003ce42ef6b6617b5950c13d1c258ecfdcd30bb4de',
+        ],
+        '0xfffffffffffffffffffffffffffffffffffffffffffffe98bd31cc11bd70fe680000000000000000000000000000000000000000000000000a8c0ff92d4c0000000000000000000000000000000000000000000002bf79e9d3bac931bdce2834000000000000000000000000000000000000000000000102f396df184811f89cfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe9dbd',
+      );
+      expect(swapEvent.name).toEqual('Swap');
+      expect(swapEvent.inputs.length).toEqual(swapEvent.values.length);
+      expect(swapEvent.values).toEqual([
+        '0x5f62593C70069AbB35dFe2B63db969e8906609d6',
+        '0x3Ce42eF6b6617b5950C13D1c258eCFDcd30bB4De',
+        BigNumber.from('-6627194964611846570392'),
+        BigNumber.from('760000000000000000'),
+        BigNumber.from('850450570881608614360786996'),
+        BigNumber.from('4776812432910168750236'),
+        -90691
+      ]);
+    });
+
     test('decodes event with tuple', () => {
       const fillEvent = zeroExCoder.decodeEvent(
         [
