@@ -108,7 +108,7 @@ describe('Coder', () => {
       });
     });
 
-    test('decodes event with tuple', () => {
+    test('decodes event with many arguments', () => {
       const fillEvent = zeroExCoder.decodeEvent(
         [
           '0x6869791f0a34781b29882982cc39e882768cf2c96995c2a110c577c53bc932d5',
@@ -436,7 +436,7 @@ describe('Coder', () => {
       });
     });
 
-    test('encodes event with a tuple', () => {
+    test('encodes event with many arguments', () => {
       expect(
         zeroExCoder.encodeEvent('Fill', {
           makerAddress: '0x7b1886e49ab5433bb46f7258548092dc8cdca28b',
