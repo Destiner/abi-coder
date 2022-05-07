@@ -1,6 +1,5 @@
 import {
   JsonFragment,
-  JsonFragmentType,
   ParamType,
   Result,
   defaultAbiCoder,
@@ -10,25 +9,21 @@ import { toUtf8Bytes } from '@ethersproject/strings';
 
 interface FunctionData {
   name: string;
-  inputs: JsonFragmentType[];
-  values: Result;
+  values: Record<string, Value>;
 }
 
 interface FunctionOutputData {
   name: string;
-  outputs: JsonFragmentType[];
-  values: Result;
+  values: Record<string, Value>;
 }
 
 interface Constructor {
-  inputs: JsonFragmentType[];
-  values: Result;
+  values: Record<string, Value>;
 }
 
 interface Event {
   name: string;
-  inputs: JsonFragmentType[];
-  values: Result;
+  values: Record<string, Value>;
 }
 
 interface EventEncoding {
@@ -37,7 +32,8 @@ interface EventEncoding {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Values = any[];
+type Value = any;
+type Values = Value[];
 
 class Coder {
   private abi: JsonFragment[];
@@ -77,9 +73,9 @@ class Coder {
     }
     const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
     const result = defaultAbiCoder.decode(inputs, data);
+    const values = toValues(result, inputs);
     return {
-      inputs,
-      values: result,
+      values,
     };
   }
 
@@ -118,10 +114,10 @@ class Coder {
         dataIndex++;
       }
     }
+    const values = toValues(result, inputs);
     return {
       name: event.name,
-      inputs,
-      values: result,
+      values,
     };
   }
 
@@ -136,14 +132,14 @@ class Coder {
     const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
     const calldata = `0x${data.substring(10)}`;
     const result = defaultAbiCoder.decode(inputs, calldata);
+    const values = toValues(result, inputs);
 
     if (!func.name) {
       throw Error;
     }
     return {
       name: func.name,
-      inputs,
-      values: result,
+      values,
     };
   }
 
@@ -155,24 +151,25 @@ class Coder {
     }
     const outputs = jsonOutputs.map((output) => ParamType.fromObject(output));
     const result = defaultAbiCoder.decode(outputs, data);
+    const values = toValues(result, outputs);
     return {
       name,
-      outputs,
-      values: result,
+      values,
     };
   }
 
-  encodeConstructor(values: Values): string {
+  encodeConstructor(values: Record<string, Value>): string {
     const constructor = this.getConstructor();
     const jsonInputs = constructor?.inputs;
     if (!jsonInputs) {
       throw Error;
     }
     const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
-    return defaultAbiCoder.encode(inputs, values);
+    const result = toResult(values, inputs);
+    return defaultAbiCoder.encode(inputs, result);
   }
 
-  encodeEvent(name: string, values: Values): EventEncoding {
+  encodeEvent(name: string, values: Record<string, Value>): EventEncoding {
     const event = this.getEventByName(name);
     const jsonInputs = event?.inputs;
     if (!jsonInputs) {
@@ -186,7 +183,7 @@ class Coder {
     const dataResult: Values = [];
     for (let i = 0; i < inputs.length; i++) {
       const input = inputs[i];
-      const value = values[i];
+      const value = values[input.name];
       if (input.indexed) {
         topicResult.push(value);
       } else {
@@ -209,7 +206,7 @@ class Coder {
     };
   }
 
-  encodeFunction(name: string, values: Values): string {
+  encodeFunction(name: string, values: Record<string, Value>): string {
     const func = this.getFunctionByName(name);
     const jsonInputs = func?.inputs;
     if (!jsonInputs) {
@@ -218,20 +215,22 @@ class Coder {
     const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
     const signature = Coder.getSignature(name, inputs);
     const selector = sha3(signature).substring(2, 10);
-    const argumentString = defaultAbiCoder.encode(inputs, values);
+    const result = toResult(values, inputs);
+    const argumentString = defaultAbiCoder.encode(inputs, result);
     const argumentData = argumentString.substring(2);
     const inputData = `0x${selector}${argumentData}`;
     return inputData;
   }
 
-  encodeFunctionOutput(name: string, values: Values): string {
+  encodeFunctionOutput(name: string, values: Record<string, Value>): string {
     const func = this.getFunctionByName(name);
     const jsonOutputs = func.outputs;
     if (!jsonOutputs) {
       throw Error;
     }
     const outputs = jsonOutputs.map((output) => ParamType.fromObject(output));
-    return defaultAbiCoder.encode(outputs, values);
+    const result = toResult(values, outputs);
+    return defaultAbiCoder.encode(outputs, result);
   }
 
   private getConstructor(): JsonFragment {
@@ -321,6 +320,21 @@ class Coder {
 
 function sha3(input: string): string {
   return keccak256(toUtf8Bytes(input));
+}
+
+function toValues(result: Result, inputs: ParamType[]): Record<string, Value> {
+  return Object.fromEntries(
+    result.map((value, index) => {
+      const input: ParamType = inputs[index];
+      return [input.name, value];
+    }),
+  );
+}
+
+function toResult(values: Record<string, Value>, inputs: ParamType[]): Values {
+  return inputs.map((input) => {
+    return values[input.name];
+  });
 }
 
 export default Coder;
