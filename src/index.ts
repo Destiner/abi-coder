@@ -168,7 +168,7 @@ class Coder {
     return defaultAbiCoder.encode(inputs, values);
   }
 
-  encodeEvent(name: string, values: Record<string, Value>): EventEncoding {
+  encodeEvent(name: string, values: ValueMap): EventEncoding {
     const event = this.getEventByName(name);
     const jsonInputs = event?.inputs;
     if (!jsonInputs) {
@@ -205,7 +205,7 @@ class Coder {
     };
   }
 
-  encodeFunction(name: string, valueMap: Record<string, Value>): string {
+  encodeFunction(name: string, valueMap: ValueMap): string {
     const func = this.getFunctionByName(name);
     const jsonInputs = func?.inputs;
     if (!jsonInputs) {
@@ -221,7 +221,7 @@ class Coder {
     return inputData;
   }
 
-  encodeFunctionOutput(name: string, valueMap: Record<string, Value>): string {
+  encodeFunctionOutput(name: string, valueMap: ValueMap): string {
     const func = this.getFunctionByName(name);
     const jsonOutputs = func.outputs;
     if (!jsonOutputs) {
@@ -321,18 +321,18 @@ function sha3(input: string): string {
   return keccak256(toUtf8Bytes(input));
 }
 
-function toValueMap(result: Result, inputs: ParamType[]): ValueMap {
+function toValueMap(values: Result, inputs: ParamType[]): ValueMap {
   return Object.fromEntries(
-    result.map((value, index) => {
+    values.map((value, index) => {
       const input: ParamType = inputs[index];
       return [input.name, value];
     }),
   );
 }
 
-function toValues(values: Record<string, Value>, inputs: ParamType[]): Values {
+function toValues(valueMap: ValueMap, inputs: ParamType[]): Values {
   return inputs.map((input) => {
-    return values[input.name];
+    return valueMap[input.name];
   });
 }
 
