@@ -52,8 +52,7 @@ describe('Coder', () => {
         '0x',
       );
       expect(initEvent.name).toEqual('Init');
-      expect(initEvent.inputs.length).toEqual(initEvent.values.length);
-      expect(initEvent.values).toEqual([]);
+      expect(initEvent.values).toEqual({});
     });
 
     test('decodes event with 2 arguments', () => {
@@ -65,13 +64,10 @@ describe('Coder', () => {
         '0x00000000000000000000000000000000000000000000000006f05b59d3b20000',
       );
       expect(withdrawalEvent.name).toEqual('Withdrawal');
-      expect(withdrawalEvent.inputs.length).toEqual(
-        withdrawalEvent.values.length,
-      );
-      expect(withdrawalEvent.values).toEqual([
-        '0x8939B49A0983A9E6eF416C23cCd8B04aF0E8A006',
-        BigNumber.from('500000000000000000'),
-      ]);
+      expect(withdrawalEvent.values).toEqual({
+        src: '0x8939B49A0983A9E6eF416C23cCd8B04aF0E8A006',
+        wad: BigNumber.from('500000000000000000'),
+      });
     });
 
     test('decodes event with 3 arguments', () => {
@@ -84,12 +80,11 @@ describe('Coder', () => {
         '0x0000000000000000000000000000000000000000000000370c9b5ef669c35300',
       );
       expect(transferEvent.name).toEqual('Transfer');
-      expect(transferEvent.inputs.length).toEqual(transferEvent.values.length);
-      expect(transferEvent.values).toEqual([
-        '0xb5CFcb4D4745cBBD252945856E1B6eaadCf2fC4E',
-        '0x694c6aea9444876d4fA9375fC9089C370F8E9edA',
-        BigNumber.from('1015479348216300000000'),
-      ]);
+      expect(transferEvent.values).toEqual({
+        from: '0xb5CFcb4D4745cBBD252945856E1B6eaadCf2fC4E',
+        to: '0x694c6aea9444876d4fA9375fC9089C370F8E9edA',
+        value: BigNumber.from('1015479348216300000000'),
+      });
     });
 
     test('decodes event with 7 arguments', () => {
@@ -102,16 +97,15 @@ describe('Coder', () => {
         '0xfffffffffffffffffffffffffffffffffffffffffffffe98bd31cc11bd70fe680000000000000000000000000000000000000000000000000a8c0ff92d4c0000000000000000000000000000000000000000000002bf79e9d3bac931bdce2834000000000000000000000000000000000000000000000102f396df184811f89cfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe9dbd',
       );
       expect(swapEvent.name).toEqual('Swap');
-      expect(swapEvent.inputs.length).toEqual(swapEvent.values.length);
-      expect(swapEvent.values).toEqual([
-        '0x5f62593C70069AbB35dFe2B63db969e8906609d6',
-        '0x3Ce42eF6b6617b5950C13D1c258eCFDcd30bB4De',
-        BigNumber.from('-6627194964611846570392'),
-        BigNumber.from('760000000000000000'),
-        BigNumber.from('850450570881608614360786996'),
-        BigNumber.from('4776812432910168750236'),
-        -90691
-      ]);
+      expect(swapEvent.values).toEqual({
+        sender: '0x5f62593C70069AbB35dFe2B63db969e8906609d6',
+        recipient: '0x3Ce42eF6b6617b5950C13D1c258eCFDcd30bB4De',
+        amount0: BigNumber.from('-6627194964611846570392'),
+        amount1: BigNumber.from('760000000000000000'),
+        sqrtPriceX96: BigNumber.from('850450570881608614360786996'),
+        liquidity: BigNumber.from('4776812432910168750236'),
+        tick: -90691,
+      });
     });
 
     test('decodes event with tuple', () => {
@@ -125,23 +119,25 @@ describe('Coder', () => {
         '0x000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000024000000000000000000000000058e327d64fc77fa36f698989623c3e4f058c8a8900000000000000000000000058e327d64fc77fa36f698989623c3e4f058c8a89000000000000000000000000000000000000000000000001e5b8fa8fe2ac000000000000000000000000000000000000000000000000000000000020574983050000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
       );
       expect(fillEvent.name).toEqual('Fill');
-      expect(fillEvent.inputs.length).toEqual(fillEvent.values.length);
-      expect(fillEvent.values).toEqual([
-        '0x7b1886e49AB5433bb46f7258548092DC8CdCA28B',
-        '0x1000000000000000000000000000000000000011',
-        '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-        '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        '0x',
-        '0x',
-        '0x9039f36033ca5ec4d518a26ce468a9c8d31bdbe9f9aa65767fa50f8c10b2019d',
-        '0x58e327D64Fc77fA36f698989623c3E4f058C8a89',
-        '0x58e327D64Fc77fA36f698989623c3E4f058C8a89',
-        BigNumber.from('35000000000000000000'),
-        BigNumber.from('138903388933'),
-        BigNumber.from('0'),
-        BigNumber.from('0'),
-        BigNumber.from('0'),
-      ]);
+      expect(fillEvent.values).toEqual({
+        makerAddress: '0x7b1886e49AB5433bb46f7258548092DC8CdCA28B',
+        feeRecipientAddress: '0x1000000000000000000000000000000000000011',
+        makerAssetData:
+          '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        takerAssetData:
+          '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        makerFeeAssetData: '0x',
+        takerFeeAssetData: '0x',
+        orderHash:
+          '0x9039f36033ca5ec4d518a26ce468a9c8d31bdbe9f9aa65767fa50f8c10b2019d',
+        takerAddress: '0x58e327D64Fc77fA36f698989623c3E4f058C8a89',
+        senderAddress: '0x58e327D64Fc77fA36f698989623c3E4f058C8a89',
+        makerAssetFilledAmount: BigNumber.from('35000000000000000000'),
+        takerAssetFilledAmount: BigNumber.from('138903388933'),
+        makerFeePaid: BigNumber.from('0'),
+        takerFeePaid: BigNumber.from('0'),
+        protocolFeePaid: BigNumber.from('0'),
+      });
     });
   });
 
@@ -149,10 +145,7 @@ describe('Coder', () => {
     test('decodes function with no arguments', () => {
       const depositFunction = wethCoder.decodeFunction('0xd0e30db0');
       expect(depositFunction.name).toEqual('deposit');
-      expect(depositFunction.inputs.length).toEqual(
-        depositFunction.values.length,
-      );
-      expect(depositFunction.values).toEqual([]);
+      expect(depositFunction.values).toEqual({});
     });
 
     test('decodes function with 2 arguments', () => {
@@ -160,15 +153,10 @@ describe('Coder', () => {
         '0xa9059cbb000000000000000000000000694c6aea9444876d4fa9375fc9089c370f8e9eda0000000000000000000000000000000000000000000000370c9b5ef669c35300',
       );
       expect(transferFunction.name).toEqual('transfer');
-      expect(transferFunction.inputs.length).toEqual(
-        transferFunction.values.length,
-      );
-      expect(transferFunction.values[0]).toEqual(
-        '0x694c6aea9444876d4fA9375fC9089C370F8E9edA',
-      );
-      expect(transferFunction.values[1]).toEqual(
-        BigNumber.from('1015479348216300000000'),
-      );
+      expect(transferFunction.values).toEqual({
+        _to: '0x694c6aea9444876d4fA9375fC9089C370F8E9edA',
+        _value: BigNumber.from('1015479348216300000000'),
+      });
     });
 
     test('decodes function with tuples', () => {
@@ -176,81 +164,94 @@ describe('Coder', () => {
         '0x88ec79fb00000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000340000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000006800000000000000000000000007b1886e49ab5433bb46f7258548092dc8cdca28b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001e5b8fa8fe2ac00000000000000000000000000000000000000000000000000000000002057498305000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000061c14b5a0000000000000000000000000000000000000000000000000000017ddb0db67600000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000028000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007b1886e49ab5433bb46f7258548092dc8cdca28b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000001100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004c910e13ea0000000000000000000000000000000000000000000000047cf0a3a070260000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000061c14b760000000000000000000000000000000000000000000000000000017ddb0e59b100000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000028000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000421ba64ca0f6f8ca7943163ec02ff09cad3e54c2ff74fc325849cd9f8cbee0826cee16d8fc0e36ed44fe9695499e6803768668a4d0a96ae4da7e5fe8d86604a9ef1c0300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000421cb4ca963bc1bf9e9ffe3c5e8ea2f9c38a716cd0ff0ec26a808dd31813d2651bc039dd04a26f9ffbfde14ed84e466ba9dcf74a84aedeacd4e375a1620dd1e9273603000000000000000000000000000000000000000000000000000000000000',
       );
       expect(matchOrdersFunction.name).toEqual('matchOrders');
-      expect(matchOrdersFunction.inputs.length).toEqual(
-        matchOrdersFunction.values.length,
-      );
-      expect(matchOrdersFunction.values[0][0]).toEqual(
+      expect(matchOrdersFunction.values.leftOrder.makerAddress).toEqual(
         '0x7b1886e49AB5433bb46f7258548092DC8CdCA28B',
       );
-      expect(matchOrdersFunction.values[0][1]).toEqual(
+      expect(matchOrdersFunction.values.leftOrder.takerAddress).toEqual(
         '0x0000000000000000000000000000000000000000',
       );
-      expect(matchOrdersFunction.values[0][2]).toEqual(
+      expect(matchOrdersFunction.values.leftOrder.feeRecipientAddress).toEqual(
         '0x1000000000000000000000000000000000000011',
       );
-      expect(matchOrdersFunction.values[0][3]).toEqual(
+      expect(matchOrdersFunction.values.leftOrder.senderAddress).toEqual(
         '0x0000000000000000000000000000000000000000',
       );
-      expect(matchOrdersFunction.values[0][4]).toEqual(
+      expect(matchOrdersFunction.values.leftOrder.makerAssetAmount).toEqual(
         BigNumber.from('35000000000000000000'),
       );
-      expect(matchOrdersFunction.values[0][5]).toEqual(
+      expect(matchOrdersFunction.values.leftOrder.takerAssetAmount).toEqual(
         BigNumber.from('138903388933'),
       );
-      expect(matchOrdersFunction.values[0][6]).toEqual(BigNumber.from('0'));
-      expect(matchOrdersFunction.values[0][7]).toEqual(BigNumber.from('0'));
-      expect(matchOrdersFunction.values[0][8]).toEqual(
-        BigNumber.from('1640057690'),
+      expect(matchOrdersFunction.values.leftOrder.makerFee).toEqual(
+        BigNumber.from('0'),
       );
-      expect(matchOrdersFunction.values[0][9]).toEqual(
+      expect(matchOrdersFunction.values.leftOrder.takerFee).toEqual(
+        BigNumber.from('0'),
+      );
+      expect(
+        matchOrdersFunction.values.leftOrder.expirationTimeSeconds,
+      ).toEqual(BigNumber.from('1640057690'));
+      expect(matchOrdersFunction.values.leftOrder.salt).toEqual(
         BigNumber.from('1640057648758'),
       );
-      expect(matchOrdersFunction.values[0][10]).toEqual(
+      expect(matchOrdersFunction.values.leftOrder.makerAssetData).toEqual(
         '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       );
-      expect(matchOrdersFunction.values[0][11]).toEqual(
+      expect(matchOrdersFunction.values.leftOrder.takerAssetData).toEqual(
         '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       );
-      expect(matchOrdersFunction.values[0][12]).toEqual('0x');
-      expect(matchOrdersFunction.values[0][13]).toEqual('0x');
-      expect(matchOrdersFunction.values[1][0]).toEqual(
+      expect(matchOrdersFunction.values.leftOrder.makerFeeAssetData).toEqual(
+        '0x',
+      );
+      expect(matchOrdersFunction.values.leftOrder.takerFeeAssetData).toEqual(
+        '0x',
+      );
+      expect(matchOrdersFunction.values.rightOrder.makerAddress).toEqual(
         '0x7b1886e49AB5433bb46f7258548092DC8CdCA28B',
       );
-      expect(matchOrdersFunction.values[1][1]).toEqual(
+      expect(matchOrdersFunction.values.rightOrder.takerAddress).toEqual(
         '0x0000000000000000000000000000000000000000',
       );
-      expect(matchOrdersFunction.values[1][2]).toEqual(
+      expect(matchOrdersFunction.values.rightOrder.feeRecipientAddress).toEqual(
         '0x1000000000000000000000000000000000000011',
       );
-      expect(matchOrdersFunction.values[1][3]).toEqual(
+      expect(matchOrdersFunction.values.rightOrder.senderAddress).toEqual(
         '0x0000000000000000000000000000000000000000',
       );
-      expect(matchOrdersFunction.values[1][4]).toEqual(
+      expect(matchOrdersFunction.values.rightOrder.makerAssetAmount).toEqual(
         BigNumber.from('328851133418'),
       );
-      expect(matchOrdersFunction.values[1][5]).toEqual(
+      expect(matchOrdersFunction.values.rightOrder.takerAssetAmount).toEqual(
         BigNumber.from('82789851859423461376'),
       );
-      expect(matchOrdersFunction.values[1][6]).toEqual(BigNumber.from('0'));
-      expect(matchOrdersFunction.values[1][7]).toEqual(BigNumber.from('0'));
-      expect(matchOrdersFunction.values[1][8]).toEqual(
-        BigNumber.from('1640057718'),
+      expect(matchOrdersFunction.values.rightOrder.makerFee).toEqual(
+        BigNumber.from('0'),
       );
-      expect(matchOrdersFunction.values[1][9]).toEqual(
+      expect(matchOrdersFunction.values.rightOrder.takerFee).toEqual(
+        BigNumber.from('0'),
+      );
+      expect(
+        matchOrdersFunction.values.rightOrder.expirationTimeSeconds,
+      ).toEqual(BigNumber.from('1640057718'));
+      expect(matchOrdersFunction.values.rightOrder.salt).toEqual(
         BigNumber.from('1640057690545'),
       );
-      expect(matchOrdersFunction.values[1][10]).toEqual(
+      expect(matchOrdersFunction.values.rightOrder.makerAssetData).toEqual(
         '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       );
-      expect(matchOrdersFunction.values[1][11]).toEqual(
+      expect(matchOrdersFunction.values.rightOrder.takerAssetData).toEqual(
         '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       );
-      expect(matchOrdersFunction.values[1][12]).toEqual('0x');
-      expect(matchOrdersFunction.values[1][13]).toEqual('0x');
-      expect(matchOrdersFunction.values[2]).toEqual(
+      expect(matchOrdersFunction.values.rightOrder.makerFeeAssetData).toEqual(
+        '0x',
+      );
+      expect(matchOrdersFunction.values.rightOrder.takerFeeAssetData).toEqual(
+        '0x',
+      );
+      expect(matchOrdersFunction.values.leftSignature).toEqual(
         '0x1ba64ca0f6f8ca7943163ec02ff09cad3e54c2ff74fc325849cd9f8cbee0826cee16d8fc0e36ed44fe9695499e6803768668a4d0a96ae4da7e5fe8d86604a9ef1c03',
       );
-      expect(matchOrdersFunction.values[3]).toEqual(
+      expect(matchOrdersFunction.values.rightSignature).toEqual(
         '0x1cb4ca963bc1bf9e9ffe3c5e8ea2f9c38a716cd0ff0ec26a808dd31813d2651bc039dd04a26f9ffbfde14ed84e466ba9dcf74a84aedeacd4e375a1620dd1e9273603',
       );
     });
@@ -260,43 +261,40 @@ describe('Coder', () => {
         '0x0d85954c00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001e00000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000003dca2ecbbfadbcbf83cfd456e1657a52e170cbf30000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000002300000000000000000000000000000000000000000000000000000000000000054170706c650000000000000000000000000000000000000000000000000000000000000000000000000000003dca2ecbbfadbcbf83cfd456e1657a52e170cbf3000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000004506561720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000001f56bff579f7a57326d07823a00a7ff0e57cbb4f00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000078000000000000000000000000000000000000000000000000000000000000000550617065720000000000000000000000000000000000000000000000000000000000000000000000000000001f56bff579f7a57326d07823a00a7ff0e57cbb4f00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000032000000000000000000000000000000000000000000000000000000000000000350656e00000000000000000000000000000000000000000000000000000000000000000000000000000000001f56bff579f7a57326d07823a00a7ff0e57cbb4f000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000007537461706c657300000000000000000000000000000000000000000000000000',
       );
       expect(updateMarketsFunction.name).toEqual('updateMarkets');
-      expect(updateMarketsFunction.inputs.length).toEqual(
-        updateMarketsFunction.values.length,
-      );
 
-      expect(updateMarketsFunction.values[0][0][0][0]).toEqual(
+      expect(updateMarketsFunction.values.goods[0][0].seller).toEqual(
         '0x3DCa2eCBBfadbCbf83CfD456E1657A52E170CbF3',
       );
-      expect(updateMarketsFunction.values[0][0][0][1]).toEqual('Apple');
-      expect(updateMarketsFunction.values[0][0][0][2]).toEqual(
+      expect(updateMarketsFunction.values.goods[0][0].name).toEqual('Apple');
+      expect(updateMarketsFunction.values.goods[0][0].price).toEqual(
         BigNumber.from(35),
       );
-      expect(updateMarketsFunction.values[0][0][1][0]).toEqual(
+      expect(updateMarketsFunction.values.goods[0][1].seller).toEqual(
         '0x3DCa2eCBBfadbCbf83CfD456E1657A52E170CbF3',
       );
-      expect(updateMarketsFunction.values[0][0][1][1]).toEqual('Pear');
-      expect(updateMarketsFunction.values[0][0][1][2]).toEqual(
+      expect(updateMarketsFunction.values.goods[0][1].name).toEqual('Pear');
+      expect(updateMarketsFunction.values.goods[0][1].price).toEqual(
         BigNumber.from(32),
       );
-      expect(updateMarketsFunction.values[0][1][0][0]).toEqual(
+      expect(updateMarketsFunction.values.goods[1][0].seller).toEqual(
         '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
       );
-      expect(updateMarketsFunction.values[0][1][0][1]).toEqual('Paper');
-      expect(updateMarketsFunction.values[0][1][0][2]).toEqual(
+      expect(updateMarketsFunction.values.goods[1][0].name).toEqual('Paper');
+      expect(updateMarketsFunction.values.goods[1][0].price).toEqual(
         BigNumber.from(120),
       );
-      expect(updateMarketsFunction.values[0][1][1][0]).toEqual(
+      expect(updateMarketsFunction.values.goods[1][1].seller).toEqual(
         '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
       );
-      expect(updateMarketsFunction.values[0][1][1][1]).toEqual('Pen');
-      expect(updateMarketsFunction.values[0][1][1][2]).toEqual(
+      expect(updateMarketsFunction.values.goods[1][1].name).toEqual('Pen');
+      expect(updateMarketsFunction.values.goods[1][1].price).toEqual(
         BigNumber.from(50),
       );
-      expect(updateMarketsFunction.values[0][1][2][0]).toEqual(
+      expect(updateMarketsFunction.values.goods[1][2].seller).toEqual(
         '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
       );
-      expect(updateMarketsFunction.values[0][1][2][1]).toEqual('Staples');
-      expect(updateMarketsFunction.values[0][1][2][2]).toEqual(
+      expect(updateMarketsFunction.values.goods[1][2].name).toEqual('Staples');
+      expect(updateMarketsFunction.values.goods[1][2].price).toEqual(
         BigNumber.from(8),
       );
     });
@@ -306,15 +304,12 @@ describe('Coder', () => {
         '0xe92a0f7900000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000044d61726b0000000000000000000000000000000000000000000000000000000000000000000000000000000000192fb10df37c9fb26829eb2cc623cd1bf599e80000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000d0000000000000000000000000000000000000000000000000000000000000004426c756500000000000000000000000000000000000000000000000000000000',
       );
       expect(addSellerFunction.name).toEqual('addSeller');
-      expect(addSellerFunction.inputs.length).toEqual(
-        addSellerFunction.values.length,
-      );
-      expect(addSellerFunction.values[0][0]).toEqual('Mark');
-      expect(addSellerFunction.values[0][1][0]).toEqual(
+      expect(addSellerFunction.values.seller.name).toEqual('Mark');
+      expect(addSellerFunction.values.seller.team.team).toEqual(
         '0x00192Fb10dF37c9FB26829eb2CC623cd1BF599E8',
       );
-      expect(addSellerFunction.values[0][1][1]).toEqual('Blue');
-      expect(addSellerFunction.values[0][1][2]).toEqual(13);
+      expect(addSellerFunction.values.seller.team.name).toEqual('Blue');
+      expect(addSellerFunction.values.seller.team.id).toEqual(13);
     });
   });
 
@@ -324,19 +319,13 @@ describe('Coder', () => {
         'swap',
         '0x',
       );
-      expect(swapFunctionOutput.outputs.length).toEqual(
-        swapFunctionOutput.values.length,
-      );
-      expect(swapFunctionOutput.values).toEqual([]);
+      expect(swapFunctionOutput.values).toEqual({});
 
       const registrerSellersFunctionOutput = marketCoder.decodeFunctionOutput(
         'registrerSellers',
         '0x',
       );
-      expect(registrerSellersFunctionOutput.outputs.length).toEqual(
-        registrerSellersFunctionOutput.values.length,
-      );
-      expect(registrerSellersFunctionOutput.values).toEqual([]);
+      expect(registrerSellersFunctionOutput.values).toEqual({});
     });
 
     test('decodes function output with an argument', () => {
@@ -344,34 +333,25 @@ describe('Coder', () => {
         'totalSupply',
         '0x00000000000000000000000000000000000000000000000006f05b59d3b20000',
       );
-      expect(totalSupplyFunctionOutput.outputs.length).toEqual(
-        totalSupplyFunctionOutput.values.length,
-      );
-      expect(totalSupplyFunctionOutput.values).toEqual([
-        BigNumber.from('500000000000000000'),
-      ]);
+      expect(totalSupplyFunctionOutput.values).toEqual({
+        supply: BigNumber.from('500000000000000000'),
+      });
 
       const ownerFunctionOutput = zeroExCoder.decodeFunctionOutput(
         'owner',
         '0x000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       );
-      expect(ownerFunctionOutput.outputs.length).toEqual(
-        ownerFunctionOutput.values.length,
-      );
-      expect(ownerFunctionOutput.values).toEqual([
-        '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-      ]);
+      expect(ownerFunctionOutput.values).toEqual({
+        owner: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      });
 
       const balanceOfFunctionOutput = erc20Coder.decodeFunctionOutput(
         'balanceOf',
         '0x000000000000000000000000000000000000000000000000bb59a27953c60000',
       );
-      expect(balanceOfFunctionOutput.outputs.length).toEqual(
-        balanceOfFunctionOutput.values.length,
-      );
-      expect(balanceOfFunctionOutput.values[0]).toEqual(
-        BigNumber.from('13500000000000000000'),
-      );
+      expect(balanceOfFunctionOutput.values).toEqual({
+        balance: BigNumber.from('13500000000000000000'),
+      });
     });
 
     test('decodes function output with a tuple', () => {
@@ -380,24 +360,24 @@ describe('Coder', () => {
           'batchFillOrdersNoThrow',
           '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000004c910e13ea0000000000000000000000000000000000000000000000047cf0a3a070260000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
         );
-      expect(batchFillOrdersNoThrowFunctionOutput.outputs.length).toEqual(
-        batchFillOrdersNoThrowFunctionOutput.values.length,
-      );
-      expect(batchFillOrdersNoThrowFunctionOutput.values[0][0][0]).toEqual(
-        BigNumber.from('328851133418'),
-      );
-      expect(batchFillOrdersNoThrowFunctionOutput.values[0][0][1]).toEqual(
-        BigNumber.from('82789851859423461376'),
-      );
-      expect(batchFillOrdersNoThrowFunctionOutput.values[0][0][2]).toEqual(
-        BigNumber.from('0'),
-      );
-      expect(batchFillOrdersNoThrowFunctionOutput.values[0][0][3]).toEqual(
-        BigNumber.from('0'),
-      );
-      expect(batchFillOrdersNoThrowFunctionOutput.values[0][0][4]).toEqual(
-        BigNumber.from('0'),
-      );
+      expect(
+        batchFillOrdersNoThrowFunctionOutput.values.fillResults[0]
+          .makerAssetFilledAmount,
+      ).toEqual(BigNumber.from('328851133418'));
+      expect(
+        batchFillOrdersNoThrowFunctionOutput.values.fillResults[0]
+          .takerAssetFilledAmount,
+      ).toEqual(BigNumber.from('82789851859423461376'));
+      expect(
+        batchFillOrdersNoThrowFunctionOutput.values.fillResults[0].makerFeePaid,
+      ).toEqual(BigNumber.from('0'));
+      expect(
+        batchFillOrdersNoThrowFunctionOutput.values.fillResults[0].takerFeePaid,
+      ).toEqual(BigNumber.from('0'));
+      expect(
+        batchFillOrdersNoThrowFunctionOutput.values.fillResults[0]
+          .protocolFeePaid,
+      ).toEqual(BigNumber.from('0'));
     });
   });
 
@@ -407,17 +387,16 @@ describe('Coder', () => {
         '0x44616920537461626c65636f696e0000000000000000000000000000000000004441490000000000000000000000000000000000000000000000000000000000',
       );
 
-      expect(constructor.inputs.length).toEqual(constructor.values.length);
-      expect(constructor.values[0]).toEqual(
-        '0x44616920537461626c65636f696e000000000000000000000000000000000000',
-      );
-      expect(constructor.values[1]).toEqual('0x4441490000000000');
+      expect(constructor.values).toEqual({
+        name: '0x44616920537461626c65636f696e000000000000000000000000000000000000',
+        symbol: '0x4441490000000000',
+      });
     });
   });
 
   describe('#encodeEvent', () => {
     test('encodes event with no arguments', () => {
-      expect(marketCoder.encodeEvent('Init', [])).toEqual({
+      expect(marketCoder.encodeEvent('Init', {})).toEqual({
         topics: [
           '0x57a86f7d14ccde89e22870afe839e3011216827daa9b24e18629f0a1e9d6cc14',
         ],
@@ -427,10 +406,10 @@ describe('Coder', () => {
 
     test('encodes event with 2 arguments', () => {
       expect(
-        wethCoder.encodeEvent('Withdrawal', [
-          '0x8939b49a0983a9e6ef416c23ccd8b04af0e8a006',
-          '500000000000000000',
-        ]),
+        wethCoder.encodeEvent('Withdrawal', {
+          src: '0x8939b49a0983a9e6ef416c23ccd8b04af0e8a006',
+          wad: '500000000000000000',
+        }),
       ).toEqual({
         topics: [
           '0x7fcf532c15f0a6db0bd6d0e038bea71d30d808c7d98cb3bf7268a95bf5081b65',
@@ -442,11 +421,11 @@ describe('Coder', () => {
 
     test('encodes event with 3 arguments', () => {
       expect(
-        erc20Coder.encodeEvent('Transfer', [
-          '0xb5cfcb4d4745cbbd252945856e1b6eaadcf2fc4e',
-          '0x694c6aea9444876d4fa9375fc9089c370f8e9eda',
-          '1015479348216300000000',
-        ]),
+        erc20Coder.encodeEvent('Transfer', {
+          from: '0xb5cfcb4d4745cbbd252945856e1b6eaadcf2fc4e',
+          to: '0x694c6aea9444876d4fa9375fc9089c370f8e9eda',
+          value: '1015479348216300000000',
+        }),
       ).toEqual({
         topics: [
           '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
@@ -459,22 +438,25 @@ describe('Coder', () => {
 
     test('encodes event with a tuple', () => {
       expect(
-        zeroExCoder.encodeEvent('Fill', [
-          '0x7b1886e49ab5433bb46f7258548092dc8cdca28b',
-          '0x1000000000000000000000000000000000000011',
-          '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-          '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-          '0x',
-          '0x',
-          '0x9039f36033ca5ec4d518a26ce468a9c8d31bdbe9f9aa65767fa50f8c10b2019d',
-          '0x58e327d64fc77fa36f698989623c3e4f058c8a89',
-          '0x58e327d64fc77fa36f698989623c3e4f058c8a89',
-          '35000000000000000000',
-          '138903388933',
-          '0',
-          '0',
-          '0',
-        ]),
+        zeroExCoder.encodeEvent('Fill', {
+          makerAddress: '0x7b1886e49ab5433bb46f7258548092dc8cdca28b',
+          feeRecipientAddress: '0x1000000000000000000000000000000000000011',
+          makerAssetData:
+            '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          takerAssetData:
+            '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          makerFeeAssetData: '0x',
+          takerFeeAssetData: '0x',
+          orderHash:
+            '0x9039f36033ca5ec4d518a26ce468a9c8d31bdbe9f9aa65767fa50f8c10b2019d',
+          takerAddress: '0x58e327d64fc77fa36f698989623c3e4f058c8a89',
+          senderAddress: '0x58e327d64fc77fa36f698989623c3e4f058c8a89',
+          makerAssetFilledAmount: '35000000000000000000',
+          takerAssetFilledAmount: '138903388933',
+          makerFeePaid: '0',
+          takerFeePaid: '0',
+          protocolFeePaid: '0',
+        }),
       ).toEqual({
         topics: [
           '0x6869791f0a34781b29882982cc39e882768cf2c96995c2a110c577c53bc932d5',
@@ -489,16 +471,16 @@ describe('Coder', () => {
 
   describe('#encodeFunction', () => {
     test('encodes function with no arguments', () => {
-      expect(wethCoder.encodeFunction('deposit', [])).toEqual('0xd0e30db0');
+      expect(wethCoder.encodeFunction('deposit', {})).toEqual('0xd0e30db0');
 
-      expect(zeroExCoder.encodeFunction('owner', [])).toEqual('0x8da5cb5b');
+      expect(zeroExCoder.encodeFunction('owner', {})).toEqual('0x8da5cb5b');
     });
 
     test('encodes function with 1 argument', () => {
       expect(
-        erc20Coder.encodeFunction('balanceOf', [
-          '0x1a9c8182c09f50c8318d769245bea52c32be35bc',
-        ]),
+        erc20Coder.encodeFunction('balanceOf', {
+          _owner: '0x1a9c8182c09f50c8318d769245bea52c32be35bc',
+        }),
       ).toEqual(
         '0x70a082310000000000000000000000001a9c8182c09f50c8318d769245bea52c32be35bc',
       );
@@ -506,10 +488,10 @@ describe('Coder', () => {
 
     test('encodes function with 2 arguments', () => {
       expect(
-        erc20Coder.encodeFunction('transfer', [
-          '0x694c6aea9444876d4fA9375fC9089C370F8E9edA',
-          '1015479348216300000000',
-        ]),
+        erc20Coder.encodeFunction('transfer', {
+          _to: '0x694c6aea9444876d4fA9375fC9089C370F8E9edA',
+          _value: '1015479348216300000000',
+        }),
       ).toEqual(
         '0xa9059cbb000000000000000000000000694c6aea9444876d4fa9375fc9089c370f8e9eda0000000000000000000000000000000000000000000000370c9b5ef669c35300',
       );
@@ -517,31 +499,31 @@ describe('Coder', () => {
 
     test('encodes function with a tuple', () => {
       expect(
-        swapperCoder.encodeFunction('swap', [
-          {
+        swapperCoder.encodeFunction('swap', {
+          quote: {
             inAmount: '250000000',
             inAsset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             outAsset: '0x6b175474e89094c44da98b954eedeac495271d0f',
           },
-          '1633000000',
-        ]),
+          deadline: '1633000000',
+        }),
       ).toEqual(
         '0xa18d33e1000000000000000000000000000000000000000000000000000000000ee6b280000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000006b175474e89094c44da98b954eedeac495271d0f0000000000000000000000000000000000000000000000000000000061559a40',
       );
 
       expect(
-        zeroExCoder.encodeFunction('matchOrders', [
-          {
+        zeroExCoder.encodeFunction('matchOrders', {
+          leftOrder: {
             makerAddress: '0x7b1886e49AB5433bb46f7258548092DC8CdCA28B',
             takerAddress: '0x0000000000000000000000000000000000000000',
             feeRecipientAddress: '0x1000000000000000000000000000000000000011',
             senderAddress: '0x0000000000000000000000000000000000000000',
-            makerAssetAmount: '35000000000000000000',
-            takerAssetAmount: '138903388933',
-            makerFee: '0',
-            takerFee: '0',
-            expirationTimeSeconds: '1640057690',
-            salt: '1640057648758',
+            makerAssetAmount: BigNumber.from('35000000000000000000'),
+            takerAssetAmount: BigNumber.from('138903388933'),
+            makerFee: BigNumber.from('0'),
+            takerFee: BigNumber.from('0'),
+            expirationTimeSeconds: BigNumber.from('1640057690'),
+            salt: BigNumber.from('1640057648758'),
             makerAssetData:
               '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
             takerAssetData:
@@ -549,17 +531,17 @@ describe('Coder', () => {
             makerFeeAssetData: '0x',
             takerFeeAssetData: '0x',
           },
-          {
+          rightOrder: {
             makerAddress: '0x7b1886e49AB5433bb46f7258548092DC8CdCA28B',
             takerAddress: '0x0000000000000000000000000000000000000000',
             feeRecipientAddress: '0x1000000000000000000000000000000000000011',
             senderAddress: '0x0000000000000000000000000000000000000000',
-            makerAssetAmount: '328851133418',
-            takerAssetAmount: '82789851859423461376',
-            makerFee: '0',
-            takerFee: '0',
-            expirationTimeSeconds: '1640057718',
-            salt: '1640057690545',
+            makerAssetAmount: BigNumber.from('328851133418'),
+            takerAssetAmount: BigNumber.from('82789851859423461376'),
+            makerFee: BigNumber.from('0'),
+            takerFee: BigNumber.from('0'),
+            expirationTimeSeconds: BigNumber.from('1640057718'),
+            salt: BigNumber.from('1640057690545'),
             makerAssetData:
               '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             takerAssetData:
@@ -567,9 +549,11 @@ describe('Coder', () => {
             makerFeeAssetData: '0x',
             takerFeeAssetData: '0x',
           },
-          '0x1ba64ca0f6f8ca7943163ec02ff09cad3e54c2ff74fc325849cd9f8cbee0826cee16d8fc0e36ed44fe9695499e6803768668a4d0a96ae4da7e5fe8d86604a9ef1c03',
-          '0x1cb4ca963bc1bf9e9ffe3c5e8ea2f9c38a716cd0ff0ec26a808dd31813d2651bc039dd04a26f9ffbfde14ed84e466ba9dcf74a84aedeacd4e375a1620dd1e9273603',
-        ]),
+          leftSignature:
+            '0x1ba64ca0f6f8ca7943163ec02ff09cad3e54c2ff74fc325849cd9f8cbee0826cee16d8fc0e36ed44fe9695499e6803768668a4d0a96ae4da7e5fe8d86604a9ef1c03',
+          rightSignature:
+            '0x1cb4ca963bc1bf9e9ffe3c5e8ea2f9c38a716cd0ff0ec26a808dd31813d2651bc039dd04a26f9ffbfde14ed84e466ba9dcf74a84aedeacd4e375a1620dd1e9273603',
+        }),
       ).toEqual(
         '0x88ec79fb00000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000340000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000006800000000000000000000000007b1886e49ab5433bb46f7258548092dc8cdca28b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001e5b8fa8fe2ac00000000000000000000000000000000000000000000000000000000002057498305000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000061c14b5a0000000000000000000000000000000000000000000000000000017ddb0db67600000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000028000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007b1886e49ab5433bb46f7258548092dc8cdca28b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000001100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004c910e13ea0000000000000000000000000000000000000000000000047cf0a3a070260000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000061c14b760000000000000000000000000000000000000000000000000000017ddb0e59b100000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000028000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000421ba64ca0f6f8ca7943163ec02ff09cad3e54c2ff74fc325849cd9f8cbee0826cee16d8fc0e36ed44fe9695499e6803768668a4d0a96ae4da7e5fe8d86604a9ef1c0300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000421cb4ca963bc1bf9e9ffe3c5e8ea2f9c38a716cd0ff0ec26a808dd31813d2651bc039dd04a26f9ffbfde14ed84e466ba9dcf74a84aedeacd4e375a1620dd1e9273603000000000000000000000000000000000000000000000000000000000000',
       );
@@ -577,19 +561,39 @@ describe('Coder', () => {
 
     test('encodes function with multidimensional tuple', () => {
       expect(
-        marketCoder.encodeFunction('updateMarkets', [
-          [
+        marketCoder.encodeFunction('updateMarkets', {
+          goods: [
             [
-              ['0x3DCa2eCBBfadbCbf83CfD456E1657A52E170CbF3', 'Apple', 35],
-              ['0x3DCa2eCBBfadbCbf83CfD456E1657A52E170CbF3', 'Pear', 32],
+              {
+                seller: '0x3DCa2eCBBfadbCbf83CfD456E1657A52E170CbF3',
+                name: 'Apple',
+                price: 35,
+              },
+              {
+                seller: '0x3DCa2eCBBfadbCbf83CfD456E1657A52E170CbF3',
+                name: 'Pear',
+                price: 32,
+              },
             ],
             [
-              ['0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f', 'Paper', 120],
-              ['0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f', 'Pen', 50],
-              ['0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f', 'Staples', 8],
+              {
+                seller: '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
+                name: 'Paper',
+                price: 120,
+              },
+              {
+                seller: '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
+                name: 'Pen',
+                price: 50,
+              },
+              {
+                seller: '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
+                name: 'Staples',
+                price: 8,
+              },
             ],
           ],
-        ]),
+        }),
       ).toEqual(
         '0x0d85954c00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001e00000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000003dca2ecbbfadbcbf83cfd456e1657a52e170cbf30000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000002300000000000000000000000000000000000000000000000000000000000000054170706c650000000000000000000000000000000000000000000000000000000000000000000000000000003dca2ecbbfadbcbf83cfd456e1657a52e170cbf3000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000004506561720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000001f56bff579f7a57326d07823a00a7ff0e57cbb4f00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000078000000000000000000000000000000000000000000000000000000000000000550617065720000000000000000000000000000000000000000000000000000000000000000000000000000001f56bff579f7a57326d07823a00a7ff0e57cbb4f00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000032000000000000000000000000000000000000000000000000000000000000000350656e00000000000000000000000000000000000000000000000000000000000000000000000000000000001f56bff579f7a57326d07823a00a7ff0e57cbb4f000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000007537461706c657300000000000000000000000000000000000000000000000000',
       );
@@ -597,9 +601,16 @@ describe('Coder', () => {
 
     test('encodes function with tuple of tuple', () => {
       expect(
-        marketCoder.encodeFunction('addSeller', [
-          ['Mark', ['0x00192Fb10dF37c9FB26829eb2CC623cd1BF599E8', 'Blue', 13]],
-        ]),
+        marketCoder.encodeFunction('addSeller', {
+          seller: {
+            name: 'Mark',
+            team: {
+              team: '0x00192Fb10dF37c9FB26829eb2CC623cd1BF599E8',
+              name: 'Blue',
+              id: 13,
+            },
+          },
+        }),
       ).toEqual(
         '0xe92a0f7900000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000044d61726b0000000000000000000000000000000000000000000000000000000000000000000000000000000000192fb10df37c9fb26829eb2cc623cd1bf599e80000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000d0000000000000000000000000000000000000000000000000000000000000004426c756500000000000000000000000000000000000000000000000000000000',
       );
@@ -615,9 +626,9 @@ describe('Coder', () => {
 
     test('encodes function output with an argument', () => {
       expect(
-        erc20Coder.encodeFunctionOutput('totalSupply', [
-          BigNumber.from('500000000000000000'),
-        ]),
+        erc20Coder.encodeFunctionOutput('totalSupply', {
+          supply: BigNumber.from('500000000000000000'),
+        }),
       ).toEqual(
         '0x00000000000000000000000000000000000000000000000006f05b59d3b20000',
       );
@@ -625,17 +636,17 @@ describe('Coder', () => {
 
     test('encodes function output with a tuple', () => {
       expect(
-        zeroExCoder.encodeFunctionOutput('batchFillOrdersNoThrow', [
-          [
-            [
-              BigNumber.from('328851133418'),
-              BigNumber.from('82789851859423461376'),
-              BigNumber.from('0'),
-              BigNumber.from('0'),
-              BigNumber.from('0'),
-            ],
+        zeroExCoder.encodeFunctionOutput('batchFillOrdersNoThrow', {
+          fillResults: [
+            {
+              makerAssetFilledAmount: BigNumber.from('328851133418'),
+              takerAssetFilledAmount: BigNumber.from('82789851859423461376'),
+              makerFeePaid: BigNumber.from('0'),
+              takerFeePaid: BigNumber.from('0'),
+              protocolFeePaid: BigNumber.from('0'),
+            },
           ],
-        ]),
+        }),
       ).toEqual(
         '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000004c910e13ea0000000000000000000000000000000000000000000000047cf0a3a070260000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
       );
@@ -645,10 +656,10 @@ describe('Coder', () => {
   describe('#encodeConstructor', () => {
     test('encodes constructor with 2 arguments', () => {
       expect(
-        tokenCoder.encodeConstructor([
-          '0x44616920537461626c65636f696e000000000000000000000000000000000000',
-          '0x4441490000000000',
-        ]),
+        tokenCoder.encodeConstructor({
+          name: '0x44616920537461626c65636f696e000000000000000000000000000000000000',
+          symbol: '0x4441490000000000',
+        }),
       ).toEqual(
         '0x44616920537461626c65636f696e0000000000000000000000000000000000004441490000000000000000000000000000000000000000000000000000000000',
       );
