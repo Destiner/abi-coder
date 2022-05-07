@@ -31,10 +31,8 @@ interface EventEncoding {
   data: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Value = any;
-type Values = Value[];
-type ValueMap = Record<string, Value>;
+type Values = unknown[];
+type ValueMap = Record<string, unknown>;
 
 class Coder {
   private abi: JsonFragment[];
