@@ -1,6 +1,6 @@
 {
   "name": "abi-coder",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "ABI function, event, and contrustor encoder/decoder",
   "main": "lib/index.js",
   "author": "Timur Badretdinov <destinerx@gmail.com>",
