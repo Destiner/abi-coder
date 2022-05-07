@@ -150,17 +150,23 @@ describe('Coder', () => {
         '0x286Dc6324127Aad68397EcC2C928C23E7B40Fe07',
       );
       expect(newMarketplaceEvent.values.goods[0].name).toEqual('Matcha');
-      expect(newMarketplaceEvent.values.goods[0].price).toEqual(BigNumber.from(7));
+      expect(newMarketplaceEvent.values.goods[0].price).toEqual(
+        BigNumber.from(7),
+      );
       expect(newMarketplaceEvent.values.goods[1].seller).toEqual(
         '0x286Dc6324127Aad68397EcC2C928C23E7B40Fe07',
       );
       expect(newMarketplaceEvent.values.goods[1].name).toEqual('Mocha');
-      expect(newMarketplaceEvent.values.goods[1].price).toEqual(BigNumber.from(9));
+      expect(newMarketplaceEvent.values.goods[1].price).toEqual(
+        BigNumber.from(9),
+      );
       expect(newMarketplaceEvent.values.goods[2].seller).toEqual(
         '0x286Dc6324127Aad68397EcC2C928C23E7B40Fe07',
       );
       expect(newMarketplaceEvent.values.goods[2].name).toEqual('Latte');
-      expect(newMarketplaceEvent.values.goods[2].price).toEqual(BigNumber.from(4));
+      expect(newMarketplaceEvent.values.goods[2].price).toEqual(
+        BigNumber.from(4),
+      );
       expect(newMarketplaceEvent.values.sellerIds).toEqual([4]);
     });
   });
