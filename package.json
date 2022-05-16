@@ -2,13 +2,18 @@
   "name": "abi-coder",
   "version": "3.1.1",
   "description": "ABI function, event, and contrustor encoder/decoder",
-  "main": "lib/index.js",
   "author": "Timur Badretdinov <destinerx@gmail.com>",
   "keywords": [
     "abi",
     "ethers",
     "ethereum"
   ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Destiner/abi-coder.git"
+  },
+  "main": "lib/index.js",
   "scripts": {
     "test": "vitest run",
     "lint": "npm run lint:eslint && npm run lint:prettier",
@@ -17,11 +22,6 @@
     "build": "tsc",
     "prepublishOnly": "npm run build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/Destiner/abi-coder.git"
-  },
-  "license": "MIT",
   "dependencies": {
     "@ethersproject/abi": "^5.0.0",
     "@ethersproject/keccak256": "^5.0.0",
