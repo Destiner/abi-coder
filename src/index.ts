@@ -336,6 +336,11 @@ function toValues(valueMap: ValueMap, inputs: ParamType[]): Values {
   });
 }
 
-export default Coder;
-
-export { FunctionData, FunctionOutputData, Constructor, Event, EventEncoding };
+export {
+  Coder,
+  Constructor,
+  Event,
+  EventEncoding,
+  FunctionData,
+  FunctionOutputData,
+};

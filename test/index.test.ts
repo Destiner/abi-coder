@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { describe, test, expect } from 'vitest';
 
-import Coder from '../src';
+import { Coder } from '../src';
 
 import erc20Abi from './abi/erc20.json';
 import marketAbi from './abi/market.json';

@@ -20,7 +20,7 @@ There are several packages that provide ABI coding utils. However, there is no a
 ## Example
 
 ```ts
-import Coder from 'abi-coder';
+import { Coder } from 'abi-coder';
 
 import * as erc20Abi from './abi/erc20.json';
 
