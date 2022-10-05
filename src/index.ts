@@ -351,4 +351,5 @@ export {
   EventEncoding,
   FunctionData,
   FunctionOutputData,
+  ValueMap,
 };
