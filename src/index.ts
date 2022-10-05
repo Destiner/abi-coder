@@ -9,20 +9,24 @@ import { toUtf8Bytes } from '@ethersproject/strings';
 
 interface FunctionData {
   name: string;
+  inputs: ParamType[];
   values: ValueMap;
 }
 
 interface FunctionOutputData {
   name: string;
+  outputs: ParamType[];
   values: ValueMap;
 }
 
 interface Constructor {
+  inputs: ParamType[];
   values: ValueMap;
 }
 
 interface Event {
   name: string;
+  inputs: ParamType[];
   values: ValueMap;
 }
 
@@ -74,6 +78,7 @@ class Coder {
     const result = defaultAbiCoder.decode(inputs, data);
     const values = toValueMap(result, inputs);
     return {
+      inputs,
       values,
     };
   }
@@ -116,6 +121,7 @@ class Coder {
     const values = toValueMap(result, inputs);
     return {
       name: event.name,
+      inputs,
       values,
     };
   }
@@ -138,6 +144,7 @@ class Coder {
     }
     return {
       name: func.name,
+      inputs,
       values,
     };
   }
@@ -153,6 +160,7 @@ class Coder {
     const values = toValueMap(result, outputs);
     return {
       name,
+      outputs,
       values,
     };
   }
