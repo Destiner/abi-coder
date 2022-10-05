@@ -679,7 +679,7 @@ describe('Coder', () => {
 
   describe('#encodeFunctionOutput', () => {
     test('encodes function output with no arguments', () => {
-      expect(marketCoder.encodeFunctionOutput('registrerSellers', [])).toEqual(
+      expect(marketCoder.encodeFunctionOutput('registrerSellers', {})).toEqual(
         '0x',
       );
     });
