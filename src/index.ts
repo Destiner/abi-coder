@@ -259,7 +259,7 @@ class Coder {
   }
 
   private getFunctionBySelector(selector: string): JsonFragment {
-    const functions = this.abi.filter((item) => item.type === 'function');
+    const functions = this.abi.filter((item) => item.type === 'function' || item.type === 'error');
     const func = functions.find((func) => {
       const name = func.name;
       const jsonInputs = func.inputs;
