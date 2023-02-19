@@ -1,11 +1,11 @@
 import {
+  AbiCoder,
   JsonFragment,
   ParamType,
   Result,
-  defaultAbiCoder,
-} from '@ethersproject/abi';
-import { keccak256 } from '@ethersproject/keccak256';
-import { toUtf8Bytes } from '@ethersproject/strings';
+  keccak256,
+  toUtf8Bytes,
+} from 'ethers';
 
 interface FunctionData {
   name: string;
@@ -51,7 +51,7 @@ class Coder {
     if (!jsonInputs) {
       throw Error;
     }
-    const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
+    const inputs = jsonInputs.map((input) => ParamType.from(input));
     const signature = Coder.getSignature(name, inputs);
     const hash = sha3(signature);
     return hash.substring(0, 10);
@@ -63,7 +63,7 @@ class Coder {
     if (!jsonInputs) {
       throw Error;
     }
-    const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
+    const inputs = jsonInputs.map((input) => ParamType.from(input));
     const signature = Coder.getSignature(name, inputs);
     return sha3(signature);
   }
@@ -74,8 +74,8 @@ class Coder {
     if (!jsonInputs) {
       throw Error;
     }
-    const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
-    const result = defaultAbiCoder.decode(inputs, data);
+    const inputs = jsonInputs.map((input) => ParamType.from(input));
+    const result = AbiCoder.defaultAbiCoder().decode(inputs, data);
     const values = toValueMap(result, inputs);
     return {
       inputs,
@@ -90,18 +90,18 @@ class Coder {
     if (!jsonInputs) {
       throw Error;
     }
-    const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
+    const inputs = jsonInputs.map((input) => ParamType.from(input));
     // Decode topics
     const topicInputs = inputs.filter((input) => input.indexed);
     const topicResult = topicInputs.map((input, index) => {
       const topic = dataTopics[index];
-      const params = defaultAbiCoder.decode([input], topic);
+      const params = AbiCoder.defaultAbiCoder().decode([input], topic);
       const [param] = params;
       return param;
     });
     // Decode data
     const dataInputs = inputs.filter((input) => !input.indexed);
-    const dataResult = defaultAbiCoder.decode(dataInputs, data);
+    const dataResult = AbiCoder.defaultAbiCoder().decode(dataInputs, data);
     // Concat
     if (!event.name) {
       throw Error;
@@ -134,9 +134,9 @@ class Coder {
     if (!jsonInputs) {
       throw Error;
     }
-    const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
+    const inputs = jsonInputs.map((input) => ParamType.from(input));
     const calldata = `0x${data.substring(10)}`;
-    const result = defaultAbiCoder.decode(inputs, calldata);
+    const result = AbiCoder.defaultAbiCoder().decode(inputs, calldata);
     const values = toValueMap(result, inputs);
 
     if (!func.name) {
@@ -155,8 +155,8 @@ class Coder {
     if (!jsonOutputs) {
       throw Error;
     }
-    const outputs = jsonOutputs.map((output) => ParamType.fromObject(output));
-    const result = defaultAbiCoder.decode(outputs, data);
+    const outputs = jsonOutputs.map((output) => ParamType.from(output));
+    const result = AbiCoder.defaultAbiCoder().decode(outputs, data);
     const values = toValueMap(result, outputs);
     return {
       name,
@@ -171,9 +171,9 @@ class Coder {
     if (!jsonInputs) {
       throw Error;
     }
-    const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
+    const inputs = jsonInputs.map((input) => ParamType.from(input));
     const values = toValues(valueMap, inputs);
-    return defaultAbiCoder.encode(inputs, values);
+    return AbiCoder.defaultAbiCoder().encode(inputs, values);
   }
 
   encodeEvent(name: string, values: ValueMap): EventEncoding {
@@ -182,7 +182,7 @@ class Coder {
     if (!jsonInputs) {
       throw Error;
     }
-    const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
+    const inputs = jsonInputs.map((input) => ParamType.from(input));
     const eventSignature = Coder.getSignature(name, inputs);
     const eventTopic = sha3(eventSignature);
     // Group params by type
@@ -200,12 +200,12 @@ class Coder {
     // Encode topic params
     const topicInputs = inputs.filter((input) => input.indexed);
     const dataTopics = topicInputs.map((input, index) => {
-      return defaultAbiCoder.encode([input], [topicResult[index]]);
+      return AbiCoder.defaultAbiCoder().encode([input], [topicResult[index]]);
     });
     const topics = [eventTopic, ...dataTopics];
     // Encode data params
     const dataInputs = inputs.filter((input) => !input.indexed);
-    const data = defaultAbiCoder.encode(dataInputs, dataResult);
+    const data = AbiCoder.defaultAbiCoder().encode(dataInputs, dataResult);
 
     return {
       topics,
@@ -219,11 +219,11 @@ class Coder {
     if (!jsonInputs) {
       throw Error;
     }
-    const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
+    const inputs = jsonInputs.map((input) => ParamType.from(input));
     const signature = Coder.getSignature(name, inputs);
     const selector = sha3(signature).substring(2, 10);
     const values = toValues(valueMap, inputs);
-    const argumentString = defaultAbiCoder.encode(inputs, values);
+    const argumentString = AbiCoder.defaultAbiCoder().encode(inputs, values);
     const argumentData = argumentString.substring(2);
     const inputData = `0x${selector}${argumentData}`;
     return inputData;
@@ -235,9 +235,9 @@ class Coder {
     if (!jsonOutputs) {
       throw Error;
     }
-    const outputs = jsonOutputs.map((output) => ParamType.fromObject(output));
+    const outputs = jsonOutputs.map((output) => ParamType.from(output));
     const values = toValues(valueMap, outputs);
-    return defaultAbiCoder.encode(outputs, values);
+    return AbiCoder.defaultAbiCoder().encode(outputs, values);
   }
 
   private getConstructor(): JsonFragment {
@@ -268,7 +268,7 @@ class Coder {
       if (!name || !jsonInputs) {
         return false;
       }
-      const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
+      const inputs = jsonInputs.map((input) => ParamType.from(input));
       const signature = Coder.getSignature(name, inputs);
       const hash = sha3(signature);
       const funcSelector = hash.substring(0, 10);
@@ -298,7 +298,7 @@ class Coder {
       if (!name || !jsonInputs) {
         return false;
       }
-      const inputs = jsonInputs.map((input) => ParamType.fromObject(input));
+      const inputs = jsonInputs.map((input) => ParamType.from(input));
       const signature = Coder.getSignature(name, inputs);
       const eventTopic = sha3(signature);
       return eventTopic === topic;
@@ -309,11 +309,14 @@ class Coder {
     return event;
   }
 
-  private static getSignature(name: string, inputs: ParamType[]): string {
+  private static getSignature(
+    name: string,
+    inputs: readonly ParamType[],
+  ): string {
     const types: string[] = [];
     for (const input of inputs) {
       if (input.type.startsWith('tuple')) {
-        const tupleString = Coder.getSignature('', input.components);
+        const tupleString = Coder.getSignature('', input.components || []);
         const arrayArityString = input.type.substring('tuple'.length);
         const type = `${tupleString}${arrayArityString}`;
         types.push(type);

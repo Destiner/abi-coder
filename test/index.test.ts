@@ -1,4 +1,3 @@
-import { BigNumber } from '@ethersproject/bignumber';
 import { describe, test, expect } from 'vitest';
 
 import { Coder } from '../src';
@@ -9,6 +8,29 @@ import swapperAbi from './abi/swapper.json';
 import tokenAbi from './abi/token.json';
 import wethAbi from './abi/weth.json';
 import zeroExAbi from './abi/zeroEx.json';
+
+interface MarketplaceGood {
+  seller: string;
+  name: string;
+  price: bigint;
+}
+
+interface Order {
+  makerAddress: string;
+  takerAddress: string;
+  feeRecipientAddress: string;
+  senderAddress: string;
+  makerAssetAmount: bigint;
+  takerAssetAmount: bigint;
+  makerFee: bigint;
+  takerFee: bigint;
+  expirationTimeSeconds: bigint;
+  salt: string;
+  makerAssetData: string;
+  takerAssetData: string;
+  makerFeeAssetData: string;
+  takerFeeAssetData: string;
+}
 
 describe('Coder', () => {
   const erc20Coder = new Coder(erc20Abi);
@@ -66,7 +88,7 @@ describe('Coder', () => {
       expect(withdrawalEvent.name).toEqual('Withdrawal');
       expect(withdrawalEvent.values).toEqual({
         src: '0x8939B49A0983A9E6eF416C23cCd8B04aF0E8A006',
-        wad: BigNumber.from('500000000000000000'),
+        wad: 500000000000000000n,
       });
     });
 
@@ -83,7 +105,7 @@ describe('Coder', () => {
       expect(transferEvent.values).toEqual({
         from: '0xb5CFcb4D4745cBBD252945856E1B6eaadCf2fC4E',
         to: '0x694c6aea9444876d4fA9375fC9089C370F8E9edA',
-        value: BigNumber.from('1015479348216300000000'),
+        value: 1015479348216300000000n,
       });
     });
 
@@ -100,10 +122,10 @@ describe('Coder', () => {
       expect(swapEvent.values).toEqual({
         sender: '0x5f62593C70069AbB35dFe2B63db969e8906609d6',
         recipient: '0x3Ce42eF6b6617b5950C13D1c258eCFDcd30bB4De',
-        amount0: BigNumber.from('-6627194964611846570392'),
-        amount1: BigNumber.from('760000000000000000'),
-        sqrtPriceX96: BigNumber.from('850450570881608614360786996'),
-        liquidity: BigNumber.from('4776812432910168750236'),
+        amount0: -6627194964611846570392n,
+        amount1: 760000000000000000n,
+        sqrtPriceX96: 850450570881608614360786996n,
+        liquidity: 4776812432910168750236n,
         tick: -90691,
       });
     });
@@ -132,11 +154,11 @@ describe('Coder', () => {
           '0x9039f36033ca5ec4d518a26ce468a9c8d31bdbe9f9aa65767fa50f8c10b2019d',
         takerAddress: '0x58e327D64Fc77fA36f698989623c3E4f058C8a89',
         senderAddress: '0x58e327D64Fc77fA36f698989623c3E4f058C8a89',
-        makerAssetFilledAmount: BigNumber.from('35000000000000000000'),
-        takerAssetFilledAmount: BigNumber.from('138903388933'),
-        makerFeePaid: BigNumber.from('0'),
-        takerFeePaid: BigNumber.from('0'),
-        protocolFeePaid: BigNumber.from('0'),
+        makerAssetFilledAmount: 35000000000000000000n,
+        takerAssetFilledAmount: 138903388933n,
+        makerFeePaid: 0n,
+        takerFeePaid: 0n,
+        protocolFeePaid: 0n,
       });
     });
 
@@ -146,27 +168,22 @@ describe('Coder', () => {
         '0x000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002a000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001a0000000000000000000000000286dc6324127aad68397ecc2c928c23e7b40fe070000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000700000000000000000000000000000000000000000000000000000000000000064d61746368610000000000000000000000000000000000000000000000000000000000000000000000000000286dc6324127aad68397ecc2c928c23e7b40fe070000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000900000000000000000000000000000000000000000000000000000000000000054d6f636861000000000000000000000000000000000000000000000000000000000000000000000000000000286dc6324127aad68397ecc2c928c23e7b40fe070000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000054c6174746500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000004',
       );
       expect(newMarketplaceEvent.name).toEqual('NewMarketplace');
-      expect(newMarketplaceEvent.values.goods[0].seller).toEqual(
+      const goods = newMarketplaceEvent.values.goods as MarketplaceGood[];
+      expect(goods[0].seller).toEqual(
         '0x286Dc6324127Aad68397EcC2C928C23E7B40Fe07',
       );
-      expect(newMarketplaceEvent.values.goods[0].name).toEqual('Matcha');
-      expect(newMarketplaceEvent.values.goods[0].price).toEqual(
-        BigNumber.from(7),
-      );
-      expect(newMarketplaceEvent.values.goods[1].seller).toEqual(
+      expect(goods[0].name).toEqual('Matcha');
+      expect(goods[0].price).toEqual(7n);
+      expect(goods[1].seller).toEqual(
         '0x286Dc6324127Aad68397EcC2C928C23E7B40Fe07',
       );
-      expect(newMarketplaceEvent.values.goods[1].name).toEqual('Mocha');
-      expect(newMarketplaceEvent.values.goods[1].price).toEqual(
-        BigNumber.from(9),
-      );
-      expect(newMarketplaceEvent.values.goods[2].seller).toEqual(
+      expect(goods[1].name).toEqual('Mocha');
+      expect(goods[1].price).toEqual(9n);
+      expect(goods[2].seller).toEqual(
         '0x286Dc6324127Aad68397EcC2C928C23E7B40Fe07',
       );
-      expect(newMarketplaceEvent.values.goods[2].name).toEqual('Latte');
-      expect(newMarketplaceEvent.values.goods[2].price).toEqual(
-        BigNumber.from(4),
-      );
+      expect(goods[2].name).toEqual('Latte');
+      expect(goods[2].price).toEqual(4n);
       expect(newMarketplaceEvent.values.sellerIds).toEqual([4]);
     });
   });
@@ -185,7 +202,7 @@ describe('Coder', () => {
       expect(transferFunction.name).toEqual('transfer');
       expect(transferFunction.values).toEqual({
         _to: '0x694c6aea9444876d4fA9375fC9089C370F8E9edA',
-        _value: BigNumber.from('1015479348216300000000'),
+        _value: 1015479348216300000000n,
       });
     });
 
@@ -194,90 +211,61 @@ describe('Coder', () => {
         '0x88ec79fb00000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000340000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000006800000000000000000000000007b1886e49ab5433bb46f7258548092dc8cdca28b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001e5b8fa8fe2ac00000000000000000000000000000000000000000000000000000000002057498305000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000061c14b5a0000000000000000000000000000000000000000000000000000017ddb0db67600000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000028000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007b1886e49ab5433bb46f7258548092dc8cdca28b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000001100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004c910e13ea0000000000000000000000000000000000000000000000047cf0a3a070260000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000061c14b760000000000000000000000000000000000000000000000000000017ddb0e59b100000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000028000000000000000000000000000000000000000000000000000000000000002a00000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024f47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000421ba64ca0f6f8ca7943163ec02ff09cad3e54c2ff74fc325849cd9f8cbee0826cee16d8fc0e36ed44fe9695499e6803768668a4d0a96ae4da7e5fe8d86604a9ef1c0300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000421cb4ca963bc1bf9e9ffe3c5e8ea2f9c38a716cd0ff0ec26a808dd31813d2651bc039dd04a26f9ffbfde14ed84e466ba9dcf74a84aedeacd4e375a1620dd1e9273603000000000000000000000000000000000000000000000000000000000000',
       );
       expect(matchOrdersFunction.name).toEqual('matchOrders');
-      expect(matchOrdersFunction.values.leftOrder.makerAddress).toEqual(
+
+      const leftOrder = matchOrdersFunction.values.leftOrder as Order;
+      const rightOrder = matchOrdersFunction.values.rightOrder as Order;
+      expect(leftOrder.makerAddress).toEqual(
         '0x7b1886e49AB5433bb46f7258548092DC8CdCA28B',
       );
-      expect(matchOrdersFunction.values.leftOrder.takerAddress).toEqual(
+      expect(leftOrder.takerAddress).toEqual(
         '0x0000000000000000000000000000000000000000',
       );
-      expect(matchOrdersFunction.values.leftOrder.feeRecipientAddress).toEqual(
+      expect(leftOrder.feeRecipientAddress).toEqual(
         '0x1000000000000000000000000000000000000011',
       );
-      expect(matchOrdersFunction.values.leftOrder.senderAddress).toEqual(
+      expect(leftOrder.senderAddress).toEqual(
         '0x0000000000000000000000000000000000000000',
       );
-      expect(matchOrdersFunction.values.leftOrder.makerAssetAmount).toEqual(
-        BigNumber.from('35000000000000000000'),
-      );
-      expect(matchOrdersFunction.values.leftOrder.takerAssetAmount).toEqual(
-        BigNumber.from('138903388933'),
-      );
-      expect(matchOrdersFunction.values.leftOrder.makerFee).toEqual(
-        BigNumber.from('0'),
-      );
-      expect(matchOrdersFunction.values.leftOrder.takerFee).toEqual(
-        BigNumber.from('0'),
-      );
-      expect(
-        matchOrdersFunction.values.leftOrder.expirationTimeSeconds,
-      ).toEqual(BigNumber.from('1640057690'));
-      expect(matchOrdersFunction.values.leftOrder.salt).toEqual(
-        BigNumber.from('1640057648758'),
-      );
-      expect(matchOrdersFunction.values.leftOrder.makerAssetData).toEqual(
+      expect(leftOrder.makerAssetAmount).toEqual(35000000000000000000n);
+      expect(leftOrder.takerAssetAmount).toEqual(138903388933n);
+      expect(leftOrder.makerFee).toEqual(0n);
+      expect(leftOrder.takerFee).toEqual(0n);
+      expect(leftOrder.expirationTimeSeconds).toEqual(1640057690n);
+      expect(leftOrder.salt).toEqual(1640057648758n);
+      expect(leftOrder.makerAssetData).toEqual(
         '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       );
-      expect(matchOrdersFunction.values.leftOrder.takerAssetData).toEqual(
+      expect(leftOrder.takerAssetData).toEqual(
         '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       );
-      expect(matchOrdersFunction.values.leftOrder.makerFeeAssetData).toEqual(
-        '0x',
-      );
-      expect(matchOrdersFunction.values.leftOrder.takerFeeAssetData).toEqual(
-        '0x',
-      );
-      expect(matchOrdersFunction.values.rightOrder.makerAddress).toEqual(
+      expect(leftOrder.makerFeeAssetData).toEqual('0x');
+      expect(leftOrder.takerFeeAssetData).toEqual('0x');
+      expect(rightOrder.makerAddress).toEqual(
         '0x7b1886e49AB5433bb46f7258548092DC8CdCA28B',
       );
-      expect(matchOrdersFunction.values.rightOrder.takerAddress).toEqual(
+      expect(rightOrder.takerAddress).toEqual(
         '0x0000000000000000000000000000000000000000',
       );
-      expect(matchOrdersFunction.values.rightOrder.feeRecipientAddress).toEqual(
+      expect(rightOrder.feeRecipientAddress).toEqual(
         '0x1000000000000000000000000000000000000011',
       );
-      expect(matchOrdersFunction.values.rightOrder.senderAddress).toEqual(
+      expect(rightOrder.senderAddress).toEqual(
         '0x0000000000000000000000000000000000000000',
       );
-      expect(matchOrdersFunction.values.rightOrder.makerAssetAmount).toEqual(
-        BigNumber.from('328851133418'),
-      );
-      expect(matchOrdersFunction.values.rightOrder.takerAssetAmount).toEqual(
-        BigNumber.from('82789851859423461376'),
-      );
-      expect(matchOrdersFunction.values.rightOrder.makerFee).toEqual(
-        BigNumber.from('0'),
-      );
-      expect(matchOrdersFunction.values.rightOrder.takerFee).toEqual(
-        BigNumber.from('0'),
-      );
-      expect(
-        matchOrdersFunction.values.rightOrder.expirationTimeSeconds,
-      ).toEqual(BigNumber.from('1640057718'));
-      expect(matchOrdersFunction.values.rightOrder.salt).toEqual(
-        BigNumber.from('1640057690545'),
-      );
-      expect(matchOrdersFunction.values.rightOrder.makerAssetData).toEqual(
+      expect(rightOrder.makerAssetAmount).toEqual(328851133418n);
+      expect(rightOrder.takerAssetAmount).toEqual(82789851859423461376n);
+      expect(rightOrder.makerFee).toEqual(0n);
+      expect(rightOrder.takerFee).toEqual(0n);
+      expect(rightOrder.expirationTimeSeconds).toEqual(1640057718n);
+      expect(rightOrder.salt).toEqual(1640057690545n);
+      expect(rightOrder.makerAssetData).toEqual(
         '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       );
-      expect(matchOrdersFunction.values.rightOrder.takerAssetData).toEqual(
+      expect(rightOrder.takerAssetData).toEqual(
         '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       );
-      expect(matchOrdersFunction.values.rightOrder.makerFeeAssetData).toEqual(
-        '0x',
-      );
-      expect(matchOrdersFunction.values.rightOrder.takerFeeAssetData).toEqual(
-        '0x',
-      );
+      expect(rightOrder.makerFeeAssetData).toEqual('0x');
+      expect(rightOrder.takerFeeAssetData).toEqual('0x');
       expect(matchOrdersFunction.values.leftSignature).toEqual(
         '0x1ba64ca0f6f8ca7943163ec02ff09cad3e54c2ff74fc325849cd9f8cbee0826cee16d8fc0e36ed44fe9695499e6803768668a4d0a96ae4da7e5fe8d86604a9ef1c03',
       );
@@ -292,41 +280,32 @@ describe('Coder', () => {
       );
       expect(updateMarketsFunction.name).toEqual('updateMarkets');
 
-      expect(updateMarketsFunction.values.goods[0][0].seller).toEqual(
+      const goods = updateMarketsFunction.values.goods as MarketplaceGood[][];
+      expect(goods[0][0].seller).toEqual(
         '0x3DCa2eCBBfadbCbf83CfD456E1657A52E170CbF3',
       );
-      expect(updateMarketsFunction.values.goods[0][0].name).toEqual('Apple');
-      expect(updateMarketsFunction.values.goods[0][0].price).toEqual(
-        BigNumber.from(35),
-      );
-      expect(updateMarketsFunction.values.goods[0][1].seller).toEqual(
+      expect(goods[0][0].name).toEqual('Apple');
+      expect(goods[0][0].price).toEqual(5n);
+      expect(goods[0][1].seller).toEqual(
         '0x3DCa2eCBBfadbCbf83CfD456E1657A52E170CbF3',
       );
-      expect(updateMarketsFunction.values.goods[0][1].name).toEqual('Pear');
-      expect(updateMarketsFunction.values.goods[0][1].price).toEqual(
-        BigNumber.from(32),
-      );
-      expect(updateMarketsFunction.values.goods[1][0].seller).toEqual(
+      expect(goods[0][1].name).toEqual('Pear');
+      expect(goods[0][1].price).toEqual(2n);
+      expect(goods[1][0].seller).toEqual(
         '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
       );
-      expect(updateMarketsFunction.values.goods[1][0].name).toEqual('Paper');
-      expect(updateMarketsFunction.values.goods[1][0].price).toEqual(
-        BigNumber.from(120),
-      );
-      expect(updateMarketsFunction.values.goods[1][1].seller).toEqual(
+      expect(goods[1][0].name).toEqual('Paper');
+      expect(goods[1][0].price).toEqual(20n);
+      expect(goods[1][1].seller).toEqual(
         '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
       );
-      expect(updateMarketsFunction.values.goods[1][1].name).toEqual('Pen');
-      expect(updateMarketsFunction.values.goods[1][1].price).toEqual(
-        BigNumber.from(50),
-      );
-      expect(updateMarketsFunction.values.goods[1][2].seller).toEqual(
+      expect(goods[1][1].name).toEqual('Pen');
+      expect(goods[1][1].price).toEqual(0n);
+      expect(goods[1][2].seller).toEqual(
         '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
       );
-      expect(updateMarketsFunction.values.goods[1][2].name).toEqual('Staples');
-      expect(updateMarketsFunction.values.goods[1][2].price).toEqual(
-        BigNumber.from(8),
-      );
+      expect(goods[1][2].name).toEqual('Staples');
+      expect(goods[1][2].price).toEqual(8n);
     });
 
     test('decodes function with tuple of tuple', () => {
@@ -334,12 +313,21 @@ describe('Coder', () => {
         '0xe92a0f7900000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000044d61726b0000000000000000000000000000000000000000000000000000000000000000000000000000000000192fb10df37c9fb26829eb2cc623cd1bf599e80000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000d0000000000000000000000000000000000000000000000000000000000000004426c756500000000000000000000000000000000000000000000000000000000',
       );
       expect(addSellerFunction.name).toEqual('addSeller');
-      expect(addSellerFunction.values.seller.name).toEqual('Mark');
-      expect(addSellerFunction.values.seller.team.team).toEqual(
+
+      const seller = addSellerFunction.values.seller as {
+        name: string;
+        team: {
+          team: string;
+          name: string;
+          id: number;
+        };
+      };
+      expect(seller.name).toEqual('Mark');
+      expect(seller.team.team).toEqual(
         '0x00192Fb10dF37c9FB26829eb2CC623cd1BF599E8',
       );
-      expect(addSellerFunction.values.seller.team.name).toEqual('Blue');
-      expect(addSellerFunction.values.seller.team.id).toEqual(13);
+      expect(seller.team.name).toEqual('Blue');
+      expect(seller.team.id).toEqual(13);
     });
   });
 
@@ -364,7 +352,7 @@ describe('Coder', () => {
         '0x00000000000000000000000000000000000000000000000006f05b59d3b20000',
       );
       expect(totalSupplyFunctionOutput.values).toEqual({
-        supply: BigNumber.from('500000000000000000'),
+        supply: 500000000000000000n,
       });
 
       const ownerFunctionOutput = zeroExCoder.decodeFunctionOutput(
@@ -380,7 +368,7 @@ describe('Coder', () => {
         '0x000000000000000000000000000000000000000000000000bb59a27953c60000',
       );
       expect(balanceOfFunctionOutput.values).toEqual({
-        balance: BigNumber.from('13500000000000000000'),
+        balance: 13500000000000000000n,
       });
     });
 
@@ -390,24 +378,22 @@ describe('Coder', () => {
           'batchFillOrdersNoThrow',
           '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000004c910e13ea0000000000000000000000000000000000000000000000047cf0a3a070260000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
         );
-      expect(
-        batchFillOrdersNoThrowFunctionOutput.values.fillResults[0]
-          .makerAssetFilledAmount,
-      ).toEqual(BigNumber.from('328851133418'));
-      expect(
-        batchFillOrdersNoThrowFunctionOutput.values.fillResults[0]
-          .takerAssetFilledAmount,
-      ).toEqual(BigNumber.from('82789851859423461376'));
-      expect(
-        batchFillOrdersNoThrowFunctionOutput.values.fillResults[0].makerFeePaid,
-      ).toEqual(BigNumber.from('0'));
-      expect(
-        batchFillOrdersNoThrowFunctionOutput.values.fillResults[0].takerFeePaid,
-      ).toEqual(BigNumber.from('0'));
-      expect(
-        batchFillOrdersNoThrowFunctionOutput.values.fillResults[0]
-          .protocolFeePaid,
-      ).toEqual(BigNumber.from('0'));
+
+      const fillResults = batchFillOrdersNoThrowFunctionOutput.values
+        .fillResults as {
+        makerAssetFilledAmount: bigint;
+        takerAssetFilledAmount: bigint;
+        makerFeePaid: bigint;
+        takerFeePaid: bigint;
+        protocolFeePaid: bigint;
+      }[];
+      expect(fillResults[0].makerAssetFilledAmount).toEqual(328851133418n);
+      expect(fillResults[0].takerAssetFilledAmount).toEqual(
+        82789851859423461376n,
+      );
+      expect(fillResults[0].makerFeePaid).toEqual(0n);
+      expect(fillResults[0].takerFeePaid).toEqual(0n);
+      expect(fillResults[0].protocolFeePaid).toEqual(0n);
     });
   });
 
@@ -578,12 +564,12 @@ describe('Coder', () => {
             takerAddress: '0x0000000000000000000000000000000000000000',
             feeRecipientAddress: '0x1000000000000000000000000000000000000011',
             senderAddress: '0x0000000000000000000000000000000000000000',
-            makerAssetAmount: BigNumber.from('35000000000000000000'),
-            takerAssetAmount: BigNumber.from('138903388933'),
-            makerFee: BigNumber.from('0'),
-            takerFee: BigNumber.from('0'),
-            expirationTimeSeconds: BigNumber.from('1640057690'),
-            salt: BigNumber.from('1640057648758'),
+            makerAssetAmount: 35000000000000000000n,
+            takerAssetAmount: 138903388933n,
+            makerFee: 0n,
+            takerFee: 0n,
+            expirationTimeSeconds: 1640057690n,
+            salt: 1640057648758n,
             makerAssetData:
               '0xf47261b0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
             takerAssetData:
@@ -596,12 +582,12 @@ describe('Coder', () => {
             takerAddress: '0x0000000000000000000000000000000000000000',
             feeRecipientAddress: '0x1000000000000000000000000000000000000011',
             senderAddress: '0x0000000000000000000000000000000000000000',
-            makerAssetAmount: BigNumber.from('328851133418'),
-            takerAssetAmount: BigNumber.from('82789851859423461376'),
-            makerFee: BigNumber.from('0'),
-            takerFee: BigNumber.from('0'),
-            expirationTimeSeconds: BigNumber.from('1640057718'),
-            salt: BigNumber.from('1640057690545'),
+            makerAssetAmount: 328851133418n,
+            takerAssetAmount: 82789851859423461376n,
+            makerFee: 0n,
+            takerFee: 0n,
+            expirationTimeSeconds: 1640057718n,
+            salt: 1640057690545n,
             makerAssetData:
               '0xf47261b0000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             takerAssetData:
@@ -687,7 +673,7 @@ describe('Coder', () => {
     test('encodes function output with an argument', () => {
       expect(
         erc20Coder.encodeFunctionOutput('totalSupply', {
-          supply: BigNumber.from('500000000000000000'),
+          supply: 500000000000000000n,
         }),
       ).toEqual(
         '0x00000000000000000000000000000000000000000000000006f05b59d3b20000',
@@ -699,11 +685,11 @@ describe('Coder', () => {
         zeroExCoder.encodeFunctionOutput('batchFillOrdersNoThrow', {
           fillResults: [
             {
-              makerAssetFilledAmount: BigNumber.from('328851133418'),
-              takerAssetFilledAmount: BigNumber.from('82789851859423461376'),
-              makerFeePaid: BigNumber.from('0'),
-              takerFeePaid: BigNumber.from('0'),
-              protocolFeePaid: BigNumber.from('0'),
+              makerAssetFilledAmount: 328851133418n,
+              takerAssetFilledAmount: 82789851859423461376n,
+              makerFeePaid: 0n,
+              takerFeePaid: 0n,
+              protocolFeePaid: 0n,
             },
           ],
         }),
