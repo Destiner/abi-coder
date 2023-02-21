@@ -8,10 +8,10 @@ There are several packages that provide ABI coding utils. However, there is no a
 
 ## Features
 
-* Function coding
-* Event coding
-* Constructor coding
-* TS support
+- Function coding
+- Event coding
+- Constructor coding
+- TS support
 
 ## Installation
 
@@ -34,12 +34,12 @@ erc20Coder.getFunctionSelector('totalSupply');
 // 0x18160ddd
 
 erc20Coder.decodeEvent(
-	[
-		'0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-		'0x000000000000000000000000b5cfcb4d4745cbbd252945856e1b6eaadcf2fc4e',
-		'0x000000000000000000000000694c6aea9444876d4fa9375fc9089c370f8e9eda',
-	],
-	'0x0000000000000000000000000000000000000000000000370c9b5ef669c35300',
+  [
+    '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+    '0x000000000000000000000000b5cfcb4d4745cbbd252945856e1b6eaadcf2fc4e',
+    '0x000000000000000000000000694c6aea9444876d4fa9375fc9089c370f8e9eda',
+  ],
+  '0x0000000000000000000000000000000000000000000000370c9b5ef669c35300',
 );
 /*
 {
@@ -54,38 +54,38 @@ erc20Coder.decodeEvent(
 */
 
 erc20Coder.encodeFunction({
-	name: 'transfer',
-	inputs: [
-		{
-			name: 'from',
-			type: 'address',
-		},
-		{
-			name: 'amount',
-			type: 'uint256',
-		},
-	],
-	values: [
-		'0x694c6aea9444876d4fA9375fC9089C370F8E9edA',
-		'1015479348216300000000',
-	],
+  name: 'transfer',
+  inputs: [
+    {
+      name: 'from',
+      type: 'address',
+    },
+    {
+      name: 'amount',
+      type: 'uint256',
+    },
+  ],
+  values: [
+    '0x694c6aea9444876d4fA9375fC9089C370F8E9edA',
+    '1015479348216300000000',
+  ],
 });
 // '0xa9059cbb000000000000000000000000694c6aea9444876d4fa9375fc9089c370f8e9eda0000000000000000000000000000000000000000000000370c9b5ef669c35300'
 ```
 
 ## API
 
-* Coder(abi)
-	* utils
-		* getFunctionSelector(name: string): string
-		* getEventTopic(name: string): string
-	* decoding
-		* decodeConstructor(data: string): Constructor
-		* decodeEvent(topics: string[], data: string): Event
-		* decodeFunction(data: string): FunctionData
-		* decodeFunctionOutput(name: string, data: string): FunctionOutputData
-	* encoding
-		* encodeConstructor(constructorData: Constructor): string
-		* encodeEvent(eventData: Event): EventEncoding
-		* encodeFunction(functionData: FunctionData): string
-		* encodeFunctionOutput(functionData: FunctionOutputData): string
+- Coder(abi)
+  - utils
+    - getFunctionSelector(name: string): string
+    - getEventTopic(name: string): string
+  - decoding
+    - decodeConstructor(data: string): Constructor
+    - decodeEvent(topics: string[], data: string): Event
+    - decodeFunction(data: string): FunctionData
+    - decodeFunctionOutput(name: string, data: string): FunctionOutputData
+  - encoding
+    - encodeConstructor(constructorData: Constructor): string
+    - encodeEvent(eventData: Event): EventEncoding
+    - encodeFunction(functionData: FunctionData): string
+    - encodeFunctionOutput(functionData: FunctionOutputData): string
