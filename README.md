@@ -17,6 +17,10 @@ There are several packages that provide ABI coding utils. However, there is no a
 
 `npm install abi-coder`
 
+> This package requires ethers V6. If you use ethers V5, you need to install abi-coder V4.
+
+> This package is a pure ESM package. Follow [this guide](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c) for more info.
+
 ## Example
 
 ```ts
