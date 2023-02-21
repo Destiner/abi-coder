@@ -313,20 +313,36 @@ class Coder {
     name: string,
     inputs: readonly ParamType[],
   ): string {
-    const types: string[] = [];
+    const inputSignatures: string[] = [];
     for (const input of inputs) {
-      if (input.type.startsWith('tuple')) {
-        const tupleString = Coder.getSignature('', input.components || []);
-        const arrayArityString = input.type.substring('tuple'.length);
-        const type = `${tupleString}${arrayArityString}`;
-        types.push(type);
-      } else {
-        types.push(input.type);
-      }
+      const inputSignature = this.getInputSignature(input);
+      inputSignatures.push(inputSignature);
     }
-    const typeString = types.join(',');
-    const functionSignature = `${name}(${typeString})`;
+    const inputString = inputSignatures.join(',');
+    const functionSignature = `${name}(${inputString})`;
     return functionSignature;
+  }
+
+  private static getInputSignature(input: ParamType): string {
+    if (input.baseType === 'array') {
+      const arityString =
+        input.arrayLength && input.arrayLength >= 0
+          ? `[${input.arrayLength}]`
+          : '[]';
+      if (!input.arrayChildren) {
+        throw Error;
+      }
+      return `${this.getInputSignature(input.arrayChildren)}${arityString}`;
+    }
+    if (input.baseType === 'tuple') {
+      if (!input.components) {
+        throw Error;
+      }
+      return `(${input.components
+        .map((childInput) => this.getInputSignature(childInput))
+        .join(',')})`;
+    }
+    return input.type;
   }
 }
 
