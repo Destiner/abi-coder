@@ -13,7 +13,12 @@
     "type": "git",
     "url": "git://github.com/Destiner/abi-coder.git"
   },
-  "main": "lib/index.js",
+  "type": "module",
+  "files": [
+    "lib/"
+  ],
+  "main": "./lib/index.js",
+  "exports": "./lib/index.js",
   "scripts": {
     "test": "vitest run",
     "lint": "npm run lint:eslint && npm run lint:prettier",
