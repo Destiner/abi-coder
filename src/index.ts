@@ -63,7 +63,7 @@ class Coder {
     if (!jsonInputs) {
       throw Error;
     }
-    const inputs = jsonInputs.map((input) => ParamType.from(input));
+    const inputs = jsonInputs.map((input) => ParamType.from(input, true));
     const signature = Coder.getSignature(name, inputs);
     return sha3(signature);
   }
@@ -90,7 +90,7 @@ class Coder {
     if (!jsonInputs) {
       throw Error;
     }
-    const inputs = jsonInputs.map((input) => ParamType.from(input));
+    const inputs = jsonInputs.map((input) => ParamType.from(input, true));
     // Decode topics
     const topicInputs = inputs.filter((input) => input.indexed);
     const topicResult = topicInputs.map((input, index) => {
@@ -182,7 +182,7 @@ class Coder {
     if (!jsonInputs) {
       throw Error;
     }
-    const inputs = jsonInputs.map((input) => ParamType.from(input));
+    const inputs = jsonInputs.map((input) => ParamType.from(input, true));
     const eventSignature = Coder.getSignature(name, inputs);
     const eventTopic = sha3(eventSignature);
     // Group params by type
@@ -298,7 +298,7 @@ class Coder {
       if (!name || !jsonInputs) {
         return false;
       }
-      const inputs = jsonInputs.map((input) => ParamType.from(input));
+      const inputs = jsonInputs.map((input) => ParamType.from(input, true));
       const signature = Coder.getSignature(name, inputs);
       const eventTopic = sha3(signature);
       return eventTopic === topic;
