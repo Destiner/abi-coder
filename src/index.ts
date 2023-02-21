@@ -336,7 +336,7 @@ function sha3(input: string): string {
 
 function toValueMap(values: Result, inputs: ParamType[]): ValueMap {
   return Object.fromEntries(
-    values.map((value, index) => {
+    values.toArray().map((value, index) => {
       const input: ParamType = inputs[index];
       return [input.name, value];
     }),
