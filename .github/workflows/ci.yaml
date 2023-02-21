@@ -14,25 +14,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [ 14.x, 16.x, 18.x ]
+        node-version: [14.x, 16.x, 18.x]
 
     steps:
-    - name: Use Node ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Use Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Clean install
-      run: npm ci
+      - name: Clean install
+        run: npm ci
 
-    - name: Lint
-      run: npm run lint
+      - name: Lint
+        run: npm run lint
 
-    - name: Build
-      run: npm run build
+      - name: Build
+        run: npm run build
 
-    - name: Test
-      run: npm run test
+      - name: Test
+        run: npm run test
