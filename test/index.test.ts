@@ -126,7 +126,7 @@ describe('Coder', () => {
         amount1: 760000000000000000n,
         sqrtPriceX96: 850450570881608614360786996n,
         liquidity: 4776812432910168750236n,
-        tick: -90691,
+        tick: -90691n,
       });
     });
 
@@ -184,7 +184,7 @@ describe('Coder', () => {
       );
       expect(goods[2].name).toEqual('Latte');
       expect(goods[2].price).toEqual(4n);
-      expect(newMarketplaceEvent.values.sellerIds).toEqual([4]);
+      expect(newMarketplaceEvent.values.sellerIds).toEqual([4n]);
     });
   });
 
@@ -285,22 +285,22 @@ describe('Coder', () => {
         '0x3DCa2eCBBfadbCbf83CfD456E1657A52E170CbF3',
       );
       expect(goods[0][0].name).toEqual('Apple');
-      expect(goods[0][0].price).toEqual(5n);
+      expect(goods[0][0].price).toEqual(35n);
       expect(goods[0][1].seller).toEqual(
         '0x3DCa2eCBBfadbCbf83CfD456E1657A52E170CbF3',
       );
       expect(goods[0][1].name).toEqual('Pear');
-      expect(goods[0][1].price).toEqual(2n);
+      expect(goods[0][1].price).toEqual(32n);
       expect(goods[1][0].seller).toEqual(
         '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
       );
       expect(goods[1][0].name).toEqual('Paper');
-      expect(goods[1][0].price).toEqual(20n);
+      expect(goods[1][0].price).toEqual(120n);
       expect(goods[1][1].seller).toEqual(
         '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
       );
       expect(goods[1][1].name).toEqual('Pen');
-      expect(goods[1][1].price).toEqual(0n);
+      expect(goods[1][1].price).toEqual(50n);
       expect(goods[1][2].seller).toEqual(
         '0x1f56BfF579f7a57326d07823a00A7fF0e57CBb4f',
       );
@@ -327,7 +327,7 @@ describe('Coder', () => {
         '0x00192Fb10dF37c9FB26829eb2CC623cd1BF599E8',
       );
       expect(seller.team.name).toEqual('Blue');
-      expect(seller.team.id).toEqual(13);
+      expect(seller.team.id).toEqual(13n);
     });
   });
 
