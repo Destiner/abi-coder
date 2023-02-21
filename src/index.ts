@@ -108,7 +108,7 @@ class Coder {
     }
     let topicIndex = 0;
     let dataIndex = 0;
-    const result: Result = [];
+    const result: Result = new Result();
     for (const input of inputs) {
       if (input.indexed) {
         result.push(topicResult[topicIndex]);
@@ -186,7 +186,7 @@ class Coder {
     const eventSignature = Coder.getSignature(name, inputs);
     const eventTopic = sha3(eventSignature);
     // Group params by type
-    const topicResult: Result = [];
+    const topicResult: Result = new Result();
     const dataResult: Values = [];
     for (let i = 0; i < inputs.length; i++) {
       const input = inputs[i];
