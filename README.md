@@ -1,6 +1,7 @@
 # ABI Coder
 
-> This package is not maintained and will be archived. Use viem's [`ABI utils`](https://viem.sh/docs/abi/decodeAbiParameters).
+> [!WARNING]
+> This package is not maintained. Use viem's [`ABI utils`](https://viem.sh/docs/abi/decodeAbiParameters).
 
 A set of high-level ABI encoding and decoding utils.
 
