@@ -361,7 +361,7 @@ function toValueMap(values: Result, inputs: ParamType[]): ValueMap {
 
 function toValues(valueMap: ValueMap, inputs: ParamType[]): Values {
   return inputs.map((input) => {
-    return valueMap[input.name];
+    return valueMap[input.name || ''];
   });
 }
 
